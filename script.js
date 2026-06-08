@@ -1354,6 +1354,1341 @@ Resultado: 0 (Falso)</span>`
     }
   }
 
+,
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE A – PROPOSICIONES (refuerzo)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '❓ Pregunta',
+    text: '"La primera computadora electrónica digital fue construida en el siglo XX." ¿Es proposición?',
+    options: [
+      { text: 'Sí, y es verdadera', correct: true },
+      { text: 'Sí, y es falsa', correct: false },
+      { text: 'No, porque habla de tecnología', correct: false },
+      { text: 'No, porque es una opinión', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '❓ Pregunta',
+    text: '"y − z = z − y", ¿es una proposición?',
+    options: [
+      { text: 'Sí, y es verdadera', correct: false },
+      { text: 'Sí, y es falsa', correct: false },
+      { text: 'No: su valor de verdad depende de los valores de y y z', correct: true },
+      { text: 'Sí, es una proposición ambigua', correct: false }
+    ],
+    justification: {
+      text: '¿Por qué depende de los valores de y y z?',
+      options: [
+        { text: 'Porque contiene variables libres, no tiene valor de verdad fijo', correct: true },
+        { text: 'Porque es una ecuación matemática', correct: false },
+        { text: 'Porque es una proposición compuesta', correct: false },
+        { text: 'Porque tiene signo =', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'tf',
+    qtype: '✔/✘ Verdadero o Falso',
+    text: '"¿Funciona la impresora?" es una proposición falsa.',
+    options: [
+      { text: 'Verdadero', correct: false },
+      { text: 'Falso – es una pregunta, por lo tanto NO es proposición', correct: true }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '❓ Pregunta',
+    text: '¿Cuál de los siguientes enunciados es una proposición VERDADERA?',
+    options: [
+      { text: '"2 + 2 = 5"', correct: false },
+      { text: '"Buenos Aires es la capital de Argentina"', correct: true },
+      { text: '"¡Qué linda ciudad!"', correct: false },
+      { text: '"Abrí la ventana."', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔍 Identificá el tipo',
+    text: '"Algunos ingenieros son médicos." ¿Cómo clasificás esta oración?',
+    options: [
+      { text: 'Proposición verdadera', correct: false },
+      { text: 'Proposición falsa', correct: true },
+      { text: 'No es proposición (es exclamación)', correct: false },
+      { text: 'No es proposición (es orden)', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '❓ Pregunta',
+    text: 'Sea p: "2 + 2 = 4". ¿Cuál es V(p)?',
+    options: [
+      { text: 'V(p) = 0', correct: false },
+      { text: 'V(p) = 1', correct: true },
+      { text: 'V(p) = indefinido', correct: false },
+      { text: 'V(p) = -1', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '❓ Pregunta',
+    text: '¿Qué dos valores de verdad puede tomar una proposición?',
+    options: [
+      { text: 'Posible e imposible', correct: false },
+      { text: 'Verdadero (1) y Falso (0)', correct: true },
+      { text: 'Afirmativo y negativo', correct: false },
+      { text: 'Cierto e incierto', correct: false }
+    ]
+  },
+  {
+    type: 'tf',
+    qtype: '✔/✘ Verdadero o Falso',
+    text: 'Una proposición puede ser simultáneamente verdadera Y falsa.',
+    options: [
+      { text: 'Verdadero', correct: false },
+      { text: 'Falso – por definición una proposición tiene UN solo valor de verdad', correct: true }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔍 Clasificá',
+    text: '"Todo polígono tiene n lados." ¿Es proposición?',
+    options: [
+      { text: 'Sí, verdadera', correct: false },
+      { text: 'Sí, falsa', correct: false },
+      { text: 'No, porque n es una variable sin valor fijo', correct: true },
+      { text: 'Sí, es una tautología', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '❓ Pregunta',
+    text: '"El sol brilla y la humedad no es alta." ¿Cuántas proposiciones simples contiene?',
+    options: [
+      { text: 'Una', correct: false },
+      { text: 'Dos', correct: true },
+      { text: 'Tres', correct: false },
+      { text: 'Ninguna, no es proposición', correct: false }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE B – CONECTIVOS LÓGICOS (refuerzo)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'match',
+    qtype: '🔗 Relacioná',
+    text: '¿Qué símbolo representa la CONJUNCIÓN?',
+    options: [
+      { text: '∨', correct: false },
+      { text: '→', correct: false },
+      { text: '∧', correct: true },
+      { text: '↔', correct: false }
+    ]
+  },
+  {
+    type: 'match',
+    qtype: '🔗 Relacioná',
+    text: '¿Qué símbolo representa la DISYUNCIÓN?',
+    options: [
+      { text: '∧', correct: false },
+      { text: '∨', correct: true },
+      { text: '→', correct: false },
+      { text: '-', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Simbolizá',
+    text: '"Si llueve entonces hay nubes en el cielo." Sea l = llueve, n = hay nubes. Simbolizá:',
+    options: [
+      { text: 'l ∧ n', correct: false },
+      { text: 'l ∨ n', correct: false },
+      { text: 'l → n', correct: true },
+      { text: 'l ↔ n', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Simbolizá',
+    text: '"El archivo se imprimirá en la impresora O en la pantalla." Sea i = se imprime, p = se ve en pantalla:',
+    options: [
+      { text: 'i ∧ p', correct: false },
+      { text: 'i ∨ p', correct: true },
+      { text: 'i → p', correct: false },
+      { text: '-i ∨ p', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Simbolizá',
+    text: '"Si hoy es lunes entonces mañana es martes." Sea l = hoy es lunes, m = mañana es martes:',
+    options: [
+      { text: 'l ∧ m', correct: false },
+      { text: 'l ↔ m', correct: false },
+      { text: 'l → m', correct: true },
+      { text: 'm → l', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Simbolizá',
+    text: '"No es cierto que la computadora se colgó." Sea c = la computadora se colgó:',
+    options: [
+      { text: 'c', correct: false },
+      { text: '-c', correct: true },
+      { text: 'c → 0', correct: false },
+      { text: 'c ∧ -c', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Simbolizá',
+    text: '"4 es par ó 4 es primo." Sea e = 4 es par, p = 4 es primo:',
+    options: [
+      { text: 'e ∧ p', correct: false },
+      { text: 'e ∨ p', correct: true },
+      { text: 'e → p', correct: false },
+      { text: 'e ↔ p', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Traducción verbal',
+    text: '¿Cuál es la lectura correcta de p ↔ q?',
+    options: [
+      { text: '"si p entonces q"', correct: false },
+      { text: '"p y q"', correct: false },
+      { text: '"p si y solo si q"', correct: true },
+      { text: '"p o q"', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Simbolizá',
+    text: '"Juan y Pedro son primos." Sea j = Juan es primo, p = Pedro es primo:',
+    options: [
+      { text: 'j ∨ p', correct: false },
+      { text: 'j ∧ p', correct: true },
+      { text: 'j → p', correct: false },
+      { text: 'j ↔ p', correct: false }
+    ],
+    justification: {
+      text: '¿Por qué conjunción y no otra cosa?',
+      options: [
+        { text: 'La palabra "y" que une dos afirmaciones independientes indica conjunción', correct: true },
+        { text: 'Porque habla de dos personas', correct: false },
+        { text: 'La palabra "y" siempre es disyunción', correct: false },
+        { text: 'Porque es una proposición compuesta con implicación implícita', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'error',
+    qtype: '🚨 Detectá el error',
+    text: 'Un estudiante escribe: "La disyunción se simboliza con ∧". ¿Hay un error?',
+    options: [
+      { text: 'No hay error', correct: false },
+      { text: 'Sí: ∧ es la conjunción. La disyunción se simboliza con ∨', correct: true },
+      { text: 'Sí: ∧ es la implicación', correct: false },
+      { text: 'Sí: ∧ es la negación', correct: false }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE C – NEGACIÓN (refuerzo)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '❓ Tabla de Verdad',
+    text: 'Si V(p) = 0, ¿cuál es V(-p)?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '❓ Pregunta',
+    text: 'La negación de "El programa terminó" es:',
+    options: [
+      { text: '"El programa empezó"', correct: false },
+      { text: '"El programa no terminó"', correct: true },
+      { text: '"El programa tardó mucho"', correct: false },
+      { text: '"El programa terminó bien"', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '❓ Pregunta',
+    text: 'La negación de "Todos los alumnos aprobaron" es:',
+    options: [
+      { text: '"Ningún alumno aprobó"', correct: false },
+      { text: '"Algunos alumnos no aprobaron" (al menos uno)', correct: true },
+      { text: '"Todos los alumnos reprobaron"', correct: false },
+      { text: '"La mayoría aprobó"', correct: false }
+    ],
+    justification: {
+      text: 'En lógica, la negación de "Todos..." es:',
+      options: [
+        { text: '"Existe al menos uno que no..." (alguno no cumple la condición)', correct: true },
+        { text: '"Ninguno..." (negación total)', correct: false },
+        { text: '"La mayoría no..."', correct: false },
+        { text: '"Exactamente la mitad no..."', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'tf',
+    qtype: '✔/✘ Verdadero o Falso',
+    text: 'La doble negación --p equivale a p.',
+    options: [
+      { text: 'Verdadero – la doble negación restituye el valor original', correct: true },
+      { text: 'Falso – la doble negación da siempre falso', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 1, ¿cuánto vale --p?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: '-1', correct: false },
+      { text: 'Indeterminado', correct: false }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE D – CONJUNCIÓN (refuerzo y aplicación)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 1 y q = 1, ¿cuánto vale p ∧ q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Depende del contexto', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 0 y q = 0, ¿cuánto vale p ∧ q?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '2', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Siendo p=1 y q=0, ¿cuánto vale p ∧ -q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ],
+    justification: {
+      text: 'Paso a paso: -q = ?, luego p ∧ -q = ?',
+      options: [
+        { text: '-q = 1 (porque q=0), entonces 1 ∧ 1 = 1', correct: true },
+        { text: '-q = 0, entonces p ∧ 0 = 0', correct: false },
+        { text: '-q invierte p también', correct: false },
+        { text: 'La conjunción con negación siempre es 0', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '🔢 Conteo',
+    text: '¿Cuántas filas tiene la tabla de verdad de p ∧ q ∧ r (tres variables)?',
+    options: [
+      { text: '4', correct: false },
+      { text: '6', correct: false },
+      { text: '8', correct: true },
+      { text: '16', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '💻 Programación',
+    text: 'En un if con condición (p AND q), ¿cuándo se ejecuta el bloque then?',
+    options: [
+      { text: 'Cuando p es verdadera, sin importar q', correct: false },
+      { text: 'Cuando ambas p y q son verdaderas', correct: true },
+      { text: 'Cuando alguna de las dos es verdadera', correct: false },
+      { text: 'Cuando p es falsa y q es verdadera', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=1, q=1, r=0. ¿Cuánto vale p ∧ q ∧ r?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '2', correct: false }
+    ],
+    justification: {
+      text: 'En una conjunción múltiple, ¿qué ocurre si una sola proposición es falsa?',
+      options: [
+        { text: 'Toda la conjunción es falsa (basta un 0 para que todo sea 0)', correct: true },
+        { text: 'Depende de cuántas sean verdaderas', correct: false },
+        { text: 'La conjunción sigue siendo verdadera si la mayoría son V', correct: false },
+        { text: 'Se toma el valor de la primera proposición', correct: false }
+      ]
+    }
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE E – DISYUNCIÓN (refuerzo y aplicación)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 1 y q = 1, ¿cuánto vale p ∨ q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Solo en disyunción exclusiva sería 0', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 0 y q = 0, ¿cuánto vale p ∨ q?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Depende del contexto', correct: false },
+      { text: 'Indeterminado', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Siendo p=0 y q=1, ¿cuánto vale -p ∨ q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ],
+    justification: {
+      text: '-p = 1 (porque p=0). Entonces 1 ∨ 1 = ?',
+      options: [
+        { text: '1, porque la disyunción de dos verdaderos es verdadera', correct: true },
+        { text: '0, porque p original es falsa', correct: false },
+        { text: '0, porque la negación cambia el resultado de la disyunción', correct: false },
+        { text: 'Indeterminado', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '💻 Programación',
+    text: 'En un if con condición (p OR q), ¿cuándo se ejecuta el bloque then?',
+    options: [
+      { text: 'Solo cuando ambas son verdaderas', correct: false },
+      { text: 'Cuando al menos una de p o q es verdadera', correct: true },
+      { text: 'Siempre', correct: false },
+      { text: 'Nunca', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔍 Diferenciá',
+    text: 'En la disyunción INCLUSIVA con p=1 y q=1, el resultado es:',
+    options: [
+      { text: '0, porque ambas no pueden ser verdaderas', correct: false },
+      { text: '1, porque la disyunción inclusiva admite que ambas sean verdaderas', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Depende del orden de p y q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔍 Diferenciá',
+    text: 'En la disyunción EXCLUSIVA con p=1 y q=1, el resultado es:',
+    options: [
+      { text: '1', correct: false },
+      { text: '0, porque ambas son verdaderas y la exclusiva requiere que solo una lo sea', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que la inclusiva', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=0, q=1, r=1. ¿Cuánto vale (p ∨ q) ∧ r?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ],
+    justification: {
+      text: 'Primero p∨q = 0∨1 = 1. Luego 1 ∧ r = 1 ∧ 1 = ?',
+      options: [
+        { text: '1, porque ambos operandos de la conjunción son verdaderos', correct: true },
+        { text: '0, porque p es falsa', correct: false },
+        { text: '0, hay que resolver de derecha a izquierda', correct: false },
+        { text: 'Indeterminado', correct: false }
+      ]
+    }
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE F – IMPLICACIÓN (refuerzo y ejercicios avanzados)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 1 y q = 1, ¿cuánto vale p → q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Depende', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 0 y q = 0, ¿cuánto vale p → q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ],
+    justification: {
+      text: '¿Por qué la implicación con p=0 y q=0 es verdadera?',
+      options: [
+        { text: 'Con antecedente falso, la implicación es siempre verdadera (vacuamente verdadera)', correct: true },
+        { text: 'Porque ambas son falsas', correct: false },
+        { text: 'Porque la implicación siempre es verdadera', correct: false },
+        { text: 'Porque 0→0 es una tautología especial', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Siendo p=1 y q=0, ¿cuánto vale -p → q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Es igual a p→q', correct: false }
+    ],
+    justification: {
+      text: '-p = 0 (porque p=1). Entonces 0 → q = 0 → 0 = ?',
+      options: [
+        { text: '1, porque con antecedente falso la implicación es verdadera', correct: true },
+        { text: '0, porque q es falso', correct: false },
+        { text: '0, porque p es verdadero y la negación lo hace falso', correct: false },
+        { text: 'Indeterminado', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=1, q=1. ¿Cuánto vale p → -q?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Es igual a p→q', correct: false }
+    ],
+    justification: {
+      text: '-q = 0 (porque q=1). Entonces p→-q = 1→0 = ?',
+      options: [
+        { text: '0, único caso en que la implicación es falsa: antecedente V y consecuente F', correct: true },
+        { text: '1, porque p es verdadero', correct: false },
+        { text: '1, la negación del consecuente no cambia el resultado', correct: false },
+        { text: 'Indeterminado', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Traducción verbal',
+    text: '"q si p" es una expresión sinónima de:',
+    options: [
+      { text: 'q → p', correct: false },
+      { text: 'p → q', correct: true },
+      { text: 'p ↔ q', correct: false },
+      { text: 'p ∧ q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Traducción verbal',
+    text: '"p es condición suficiente para q" equivale a:',
+    options: [
+      { text: 'q → p', correct: false },
+      { text: 'p ↔ q', correct: false },
+      { text: 'p → q', correct: true },
+      { text: 'p ∧ q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Traducción verbal',
+    text: '"q es condición necesaria para p" equivale a:',
+    options: [
+      { text: 'q → p', correct: false },
+      { text: 'p → q', correct: true },
+      { text: 'p ↔ q', correct: false },
+      { text: '-p → q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔤 Traducción verbal',
+    text: '"No hay p sin q" equivale a:',
+    options: [
+      { text: 'q → p', correct: false },
+      { text: 'p → q', correct: true },
+      { text: 'p ∧ -q', correct: false },
+      { text: '-p ∨ -q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🧩 Completá',
+    text: 'La implicación p → q es equivalente a la disyunción: _______',
+    options: [
+      { text: 'p ∨ q', correct: false },
+      { text: '-p ∨ q', correct: true },
+      { text: 'p ∨ -q', correct: false },
+      { text: '-p ∨ -q', correct: false }
+    ],
+    justification: {
+      text: '¿Por qué p→q equivale a -p∨q?',
+      options: [
+        { text: 'Porque la implicación solo es falsa cuando p=1 y q=0, igual que -p∨q', correct: true },
+        { text: 'Porque toda implicación es una disyunción disfrazada sin más razón', correct: false },
+        { text: 'Porque la negación de p siempre convierte la implicación', correct: false },
+        { text: 'No son equivalentes, el estudiante se equivocó', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Siendo p=0 y q=1, ¿cuánto vale (p → q) ∧ (q → p)?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Es lo mismo que p↔q', correct: false }
+    ],
+    justification: {
+      text: 'p→q = 0→1 = 1. q→p = 1→0 = 0. Entonces 1∧0 = ?',
+      options: [
+        { text: '0, porque la conjunción requiere ambos verdaderos', correct: true },
+        { text: '1, porque al menos una implicación es verdadera', correct: false },
+        { text: 'Indeterminado por el orden de resolución', correct: false },
+        { text: '1, porque p→q es verdadera', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sea p=1, q=0. ¿Cuánto vale (p ∨ q) → q?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p→q', correct: false }
+    ],
+    justification: {
+      text: 'p∨q = 1∨0 = 1. Luego 1→q = 1→0 = ?',
+      options: [
+        { text: '0, porque antecedente V y consecuente F es el único caso falso de la implicación', correct: true },
+        { text: '1, porque p∨q es verdadera', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: '1, porque q siempre domina', correct: false }
+      ]
+    }
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE G – DOBLE IMPLICACIÓN (refuerzo)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 1 y q = 1, ¿cuánto vale p ↔ q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p→q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 0 y q = 0, ¿cuánto vale p ↔ q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p∧q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Si p = 1 y q = 0, ¿cuánto vale p ↔ q?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p→q', correct: false }
+    ],
+    justification: {
+      text: 'La doble implicación es falsa cuando:',
+      options: [
+        { text: 'p y q tienen distinto valor de verdad', correct: true },
+        { text: 'p es verdadera y q es falsa solamente', correct: false },
+        { text: 'Ambas son falsas', correct: false },
+        { text: 'La implicación directa es falsa', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '🧩 Completá',
+    text: 'La doble implicación p ↔ q es verdadera cuando p y q tienen _______.',
+    options: [
+      { text: 'Valores distintos', correct: false },
+      { text: 'El mismo valor de verdad', correct: true },
+      { text: 'Ambas valor 1', correct: false },
+      { text: 'Ambas valor 0', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=1, q=0. ¿Cuánto vale -(p ↔ q)?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ],
+    justification: {
+      text: 'p↔q = 0 (valores distintos). Entonces -(0) = ?',
+      options: [
+        { text: '1, la negación de falso es verdadero', correct: true },
+        { text: '0, la negación no cambia el bicondicional', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: '-1', correct: false }
+      ]
+    }
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE H – VARIANTES IMPLICACIÓN (refuerzo)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '🔄 Variantes',
+    text: 'Dada p → q, ¿cuál es la INVERSA (o negación de ambas sin invertir)?',
+    options: [
+      { text: 'q → p', correct: false },
+      { text: '-p → -q', correct: true },
+      { text: '-q → -p', correct: false },
+      { text: 'p ↔ q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔗 Equivalencia',
+    text: 'La inversa -p → -q ¿es equivalente a la implicación directa p → q?',
+    options: [
+      { text: 'Sí, siempre son equivalentes', correct: false },
+      { text: 'No, la inversa no es equivalente a la directa', correct: true },
+      { text: 'Solo cuando p es verdadera', correct: false },
+      { text: 'Solo cuando q es verdadera', correct: false }
+    ],
+    justification: {
+      text: '¿Qué variante SÍ es equivalente a la directa?',
+      options: [
+        { text: 'La contrarrecíproca (-q → -p)', correct: true },
+        { text: 'La recíproca (q → p)', correct: false },
+        { text: 'La inversa (-p → -q)', correct: false },
+        { text: 'Ninguna variante es equivalente', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '🔄 Variantes',
+    text: 'Si p → q es verdadera, ¿qué podemos afirmar sobre -q → -p?',
+    options: [
+      { text: 'También es verdadera, porque son equivalentes', correct: true },
+      { text: 'Es falsa, porque es la negación de la directa', correct: false },
+      { text: 'No se puede determinar', correct: false },
+      { text: 'Es falsa cuando p=0', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🔄 Variantes',
+    text: '¿Cuál de las variantes de p → q NO es equivalente a ella?',
+    options: [
+      { text: 'La contrarrecíproca: -q → -p', correct: false },
+      { text: 'La recíproca: q → p', correct: true },
+      { text: 'Ambas son equivalentes', correct: false },
+      { text: 'Ninguna es equivalente', correct: false }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE I – TABLAS DE VERDAD (ejercicios integradores)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=1, q=1, r=0. ¿Cuánto vale (p ∧ q) → r?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p→r', correct: false }
+    ],
+    justification: {
+      text: 'p∧q = 1∧1 = 1. Luego 1→r = 1→0 = ?',
+      options: [
+        { text: '0, antecedente verdadero y consecuente falso es el único caso falso de →', correct: true },
+        { text: '1, porque p∧q es verdadera', correct: false },
+        { text: '1, porque la conjunción domina', correct: false },
+        { text: 'Indeterminado', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=0, q=1. ¿Cuánto vale -(p ∧ q) ∨ p?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ],
+    justification: {
+      text: 'p∧q=0. -(0)=1. 1∨p=1∨0=?',
+      options: [
+        { text: '1, la disyunción de 1 con cualquier valor da 1', correct: true },
+        { text: '0, p es falsa', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: 'Depende de q', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=1, q=0, r=1. ¿Cuánto vale p → (q ∨ r)?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p→q', correct: false }
+    ],
+    justification: {
+      text: 'q∨r = 0∨1 = 1. Luego p→1 = 1→1 = ?',
+      options: [
+        { text: '1, porque 1→1 es verdadero', correct: true },
+        { text: '0, porque q es falso', correct: false },
+        { text: '0, porque p→q sería 1→0=0', correct: false },
+        { text: 'Indeterminado', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Siendo p=0, q=0, ¿cuánto vale -p → -q?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p→q', correct: false }
+    ],
+    justification: {
+      text: '-p=1, -q=1. Entonces 1→1 = ?',
+      options: [
+        { text: '1, porque ambos son verdaderos', correct: true },
+        { text: '0, porque p y q son falsas', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: 'Igual que p∧q', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=1, q=1. ¿Cuánto vale (p → q) ↔ (q → p)?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p↔q', correct: false }
+    ],
+    justification: {
+      text: 'p→q=1, q→p=1. Entonces 1↔1=?',
+      options: [
+        { text: '1, la bicondicional es verdadera cuando ambos lados tienen el mismo valor', correct: true },
+        { text: '0, la bicondicional de dos implicaciones siempre es 0', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: '0, porque p=q=1 hace que sean distintas', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '📊 Calculá',
+    text: 'Sean p=1, q=0. ¿Cuánto vale (p → q) ↔ (-q → -p)?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Solo verdadero si p=q', correct: false }
+    ],
+    justification: {
+      text: 'p→q=0. -q=1,-p=0, entonces -q→-p=1→0=0. Entonces 0↔0=?',
+      options: [
+        { text: '1, ambos lados son 0 y la bicondicional de iguales es verdadera', correct: true },
+        { text: '0, porque ambas implicaciones son falsas', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: '0, no son equivalentes', correct: false }
+      ]
+    }
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE J – LÓGICA Y PROGRAMACIÓN (refuerzo)
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '💻 Programación',
+    text: 'En "while (p AND q) do acción", ¿cuándo se detiene el lazo?',
+    options: [
+      { text: 'Cuando p se vuelve falsa O q se vuelve falsa (o ambas)', correct: true },
+      { text: 'Solo cuando ambas se vuelven falsas a la vez', correct: false },
+      { text: 'Cuando p se vuelve falsa solamente', correct: false },
+      { text: 'Nunca se detiene', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '💻 Programación',
+    text: 'En "while (p OR q) do acción", ¿cuándo se detiene el lazo?',
+    options: [
+      { text: 'Cuando alguna de las dos es falsa', correct: false },
+      { text: 'Cuando AMBAS p y q son falsas', correct: true },
+      { text: 'Cuando p es falsa solamente', correct: false },
+      { text: 'Nunca', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '💻 Programación',
+    text: 'Sea i:=1; while i < 4 do begin x:=x+1; i:=i+1 end. ¿Cuántas veces se ejecuta x:=x+1?',
+    options: [
+      { text: '2', correct: false },
+      { text: '3', correct: true },
+      { text: '4', correct: false },
+      { text: '1', correct: false }
+    ],
+    justification: {
+      text: '¿Por qué 3 veces?',
+      options: [
+        { text: 'i=1 (V→ejecuta), i=2 (V→ejecuta), i=3 (V→ejecuta), i=4 (F→detiene). Total: 3', correct: true },
+        { text: 'El bucle siempre corre el límite menos 1 veces', correct: false },
+        { text: 'El bucle corre hasta que i iguala el límite', correct: false },
+        { text: 'Corre desde 0 hasta 4', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '💻 Programación',
+    text: 'En "if (p AND NOT q) then acción". Con p=1 y q=1, ¿se ejecuta la acción?',
+    options: [
+      { text: 'Sí, porque p es verdadera', correct: false },
+      { text: 'No, porque NOT q = 0 y p∧0 = 0 (condición falsa)', correct: true },
+      { text: 'Sí, porque la conjunción de p es suficiente', correct: false },
+      { text: 'No, porque q es verdadera', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '💻 Programación',
+    text: 'La condición "i < 2 OR i > 0" con i=1, ¿es verdadera o falsa?',
+    options: [
+      { text: 'Falsa, porque i no puede cumplir ambas', correct: false },
+      { text: 'Verdadera, porque i<2 es V y i>0 es V, y V∨V=1', correct: true },
+      { text: 'Falsa, porque es una disyunción contradictoria', correct: false },
+      { text: 'Indeterminada', correct: false }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE K – LÓGICA FORMAL Y CONCEPTOS GENERALES
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '🧠 Comprensión',
+    text: '¿Para qué sirve la Lógica Formal en Ciencias de la Computación?',
+    options: [
+      { text: 'Solo para diseñar hardware', correct: false },
+      { text: 'Para demostrar la corrección de programas y especificar su comportamiento sin ambigüedad', correct: true },
+      { text: 'Solo para la inteligencia artificial', correct: false },
+      { text: 'Para traducir lenguajes de programación', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🧠 Comprensión',
+    text: '¿En qué año surgió el lenguaje de programación lógica PROLOG?',
+    options: [
+      { text: '1960', correct: false },
+      { text: '1972', correct: true },
+      { text: '1985', correct: false },
+      { text: '1990', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🧠 Comprensión',
+    text: '¿Qué es la Lógica Simbólica?',
+    options: [
+      { text: 'Una lógica que solo usa números', correct: false },
+      { text: 'Una forma de lógica que reemplaza contenidos por símbolos para operar formalmente', correct: true },
+      { text: 'Un lenguaje de programación', correct: false },
+      { text: 'Un tipo especial de tabla de verdad', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🧠 Comprensión',
+    text: '¿Qué es la Matemática Discreta?',
+    options: [
+      { text: 'El estudio de números continuos y funciones', correct: false },
+      { text: 'El estudio de objetos discretos (contables) y las relaciones entre ellos', correct: true },
+      { text: 'Una rama de la física', correct: false },
+      { text: 'El estudio de algoritmos de ordenamiento', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🧠 Comprensión',
+    text: '¿Cuál es el metalenguaje que menciona el apunte para especificar programas?',
+    options: [
+      { text: 'El lenguaje ensamblador', correct: false },
+      { text: 'La Lógica Formal', correct: true },
+      { text: 'El pseudocódigo', correct: false },
+      { text: 'El lenguaje C', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🧠 Comprensión',
+    text: '¿Cómo se designan convencionalmente las proposiciones en lógica simbólica?',
+    options: [
+      { text: 'Con números 0 y 1', correct: false },
+      { text: 'Con letras minúsculas: p, q, r, w...', correct: true },
+      { text: 'Con letras mayúsculas: P, Q, R...', correct: false },
+      { text: 'Con símbolos griegos: α, β, γ...', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🧠 Comprensión',
+    text: 'En lógica proposicional, los valores verdadero y falso se representan numéricamente como:',
+    options: [
+      { text: '1 y -1', correct: false },
+      { text: '1 y 0', correct: true },
+      { text: '2 y 1', correct: false },
+      { text: 'V y F solamente (sin equivalente numérico)', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🧠 Comprensión',
+    text: 'La Lógica de Predicados estudia proposiciones en las cuales aparecen palabras como:',
+    options: [
+      { text: '"y", "o", "si"', correct: false },
+      { text: '"todos", "alguno", "ninguno" (cuantificadores)', correct: true },
+      { text: 'Solo símbolos matemáticos', correct: false },
+      { text: 'Solo negaciones y conjunciones', correct: false }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE L – DETECCIÓN DE ERRORES Y DISCRIMINACIÓN
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'error',
+    qtype: '🚨 Detectá el error',
+    text: '"La implicación p → q es falsa cuando p es falsa." ¿Esta afirmación es correcta?',
+    options: [
+      { text: 'Sí, es correcta', correct: false },
+      { text: 'No: con p falsa la implicación es SIEMPRE verdadera (vacuamente verdadera)', correct: true },
+      { text: 'Sí, porque con p falsa q también es falsa', correct: false },
+      { text: 'Depende del valor de q', correct: false }
+    ]
+  },
+  {
+    type: 'error',
+    qtype: '🚨 Detectá el error',
+    text: '"La disyunción p ∨ q es verdadera solo cuando exactamente UNA es verdadera." ¿Error?',
+    options: [
+      { text: 'No hay error, es correcto', correct: false },
+      { text: 'Sí: eso describe la disyunción EXCLUSIVA. La inclusiva es verdadera también cuando ambas son V', correct: true },
+      { text: 'Sí: la disyunción siempre es falsa cuando ambas son V', correct: false },
+      { text: 'No hay error porque se refiere a la inclusiva', correct: false }
+    ]
+  },
+  {
+    type: 'error',
+    qtype: '🚨 Detectá el error',
+    text: '"La bicondicional p ↔ q es equivalente a (p → q) ∨ (q → p)." ¿Error?',
+    options: [
+      { text: 'No hay error', correct: false },
+      { text: 'Sí: la bicondicional equivale a (p→q) ∧ (q→p), no a la disyunción', correct: true },
+      { text: 'Sí: la bicondicional equivale solo a p→q', correct: false },
+      { text: 'Sí: la bicondicional no tiene equivalencia con implicaciones', correct: false }
+    ]
+  },
+  {
+    type: 'error',
+    qtype: '🚨 Detectá el error',
+    text: '"La tabla de verdad de 4 variables tiene 8 filas." ¿Error?',
+    options: [
+      { text: 'No hay error', correct: false },
+      { text: 'Sí: 4 variables → 2⁴ = 16 filas, no 8', correct: true },
+      { text: 'Sí: debería tener 4 filas', correct: false },
+      { text: 'Sí: debería tener 32 filas', correct: false }
+    ],
+    justification: {
+      text: 'La fórmula correcta es:',
+      options: [
+        { text: '2ⁿ donde n es el número de variables proposicionales', correct: true },
+        { text: 'n × 2 donde n es el número de variables', correct: false },
+        { text: 'n² donde n es el número de variables', correct: false },
+        { text: 'n + 4 donde n es el número de variables', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'error',
+    qtype: '🚨 Detectá el error',
+    text: '"La recíproca de p → q es -q → -p y es equivalente a la directa." ¿Error?',
+    options: [
+      { text: 'No hay error', correct: false },
+      { text: 'Sí: -q → -p es la CONTRARRECÍPROCA (que sí es equivalente). La recíproca es q → p y NO es equivalente a la directa', correct: true },
+      { text: 'Sí: la recíproca es -p → -q', correct: false },
+      { text: 'No hay error en la equivalencia, solo en el nombre', correct: false }
+    ]
+  },
+  {
+    type: 'error',
+    qtype: '🚨 Detectá el error',
+    text: '"p ∧ q es verdadera cuando p=0 y q=0." ¿Error?',
+    options: [
+      { text: 'No hay error', correct: false },
+      { text: 'Sí: con p=0 y q=0 la conjunción es 0 (falsa), no verdadera', correct: true },
+      { text: 'Sí: con p=0 y q=0 la conjunción es indeterminada', correct: false },
+      { text: 'No hay error porque 0∧0=0 es correcto en algún contexto', correct: false }
+    ]
+  },
+
+  /* ══════════════════════════════════════════════════════
+     BLOQUE M – REPASO INTEGRADOR FINAL
+     ══════════════════════════════════════════════════════ */
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: 'Sean p=1, q=0. Determiná el valor de: (p → q) ↔ -(p ∧ -q)',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ],
+    justification: {
+      text: 'p→q=0. -q=1, p∧-q=1, -(1)=0. Entonces 0↔0=?',
+      options: [
+        { text: '1, porque ambos lados son 0 y la bicondicional de iguales es V', correct: true },
+        { text: '0, porque p→q es falsa', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: '0, porque p∧-q es verdadera', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: 'La tautología es una proposición que:',
+    options: [
+      { text: 'Es siempre falsa', correct: false },
+      { text: 'Es verdadera para todos los valores posibles de sus variables', correct: true },
+      { text: 'Puede ser verdadera o falsa según el contexto', correct: false },
+      { text: 'Es falsa para todos los valores posibles', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: 'Una contradicción es una proposición que:',
+    options: [
+      { text: 'Es siempre verdadera', correct: false },
+      { text: 'Es siempre falsa para todos los valores posibles de sus variables', correct: true },
+      { text: 'Es verdadera para algunos valores y falsa para otros', correct: false },
+      { text: 'Es equivalente a la tautología', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: '¿Cuál de estas es una CONTRADICCIÓN?',
+    options: [
+      { text: 'p ∨ -p', correct: false },
+      { text: 'p ∧ -p', correct: true },
+      { text: 'p → p', correct: false },
+      { text: 'p ↔ p', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: '¿Cuál de estas es una TAUTOLOGÍA?',
+    options: [
+      { text: 'p ∧ -p', correct: false },
+      { text: 'p → q', correct: false },
+      { text: 'p ∨ -p', correct: true },
+      { text: 'p ↔ -p', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: 'Sean p=0, q=1, r=0. ¿Cuánto vale -p ∧ (q ∨ r)?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: '-1', correct: false }
+    ],
+    justification: {
+      text: '-p=1, q∨r=1∨0=1. Entonces 1∧1=?',
+      options: [
+        { text: '1, la conjunción de dos verdaderos es verdadera', correct: true },
+        { text: '0, r es falso y eso invalida todo', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: '0, porque p es falsa', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: 'Siendo p=1 y q=0, ¿cuánto vale (p ∨ q) → (p ∧ q)?',
+    options: [
+      { text: '1', correct: false },
+      { text: '0', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Igual que p→q', correct: false }
+    ],
+    justification: {
+      text: 'p∨q=1, p∧q=0. Entonces 1→0=?',
+      options: [
+        { text: '0, es el único caso en que la implicación es falsa', correct: true },
+        { text: '1, porque p∨q es verdadera', correct: false },
+        { text: '1, porque la disyunción domina', correct: false },
+        { text: 'Indeterminado', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: 'Sea p=0, q=0. ¿Cuánto vale -(p ∨ q) ↔ (-p ∧ -q)?',
+    options: [
+      { text: '0', correct: false },
+      { text: '1', correct: true },
+      { text: 'Indeterminado', correct: false },
+      { text: 'Depende de r', correct: false }
+    ],
+    justification: {
+      text: 'p∨q=0, -(0)=1. -p=1,-q=1, -p∧-q=1. Entonces 1↔1=? (Esta es la Ley de De Morgan)',
+      options: [
+        { text: '1, demuestra que -(p∨q) ≡ (-p∧-q) — Ley de De Morgan', correct: true },
+        { text: '0, las leyes de De Morgan no aplican aquí', correct: false },
+        { text: 'Indeterminado', correct: false },
+        { text: '0, porque p y q son falsas', correct: false }
+      ]
+    }
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: 'La Ley de De Morgan establece que -(p ∧ q) equivale a:',
+    options: [
+      { text: '-p ∧ -q', correct: false },
+      { text: '-p ∨ -q', correct: true },
+      { text: 'p ∨ q', correct: false },
+      { text: '-p → -q', correct: false }
+    ]
+  },
+  {
+    type: 'mc',
+    qtype: '🏁 Integrador',
+    text: 'La Ley de De Morgan establece que -(p ∨ q) equivale a:',
+    options: [
+      { text: '-p ∨ -q', correct: false },
+      { text: '-p ∧ -q', correct: true },
+      { text: 'p ∧ q', correct: false },
+      { text: 'p → q', correct: false }
+    ]
+  },
+
+  /* REPASO ACUMULATIVO EXTRA */
+  {
+    type: 'review',
+    title: '🔄 Repaso Extra – Leyes importantes',
+    items: [
+      { icon: '⚡', text: '<strong>De Morgan 1:</strong> -(p∧q) ≡ -p∨-q &nbsp;|&nbsp; La negación de una conjunción es la disyunción de las negaciones.' },
+      { icon: '⚡', text: '<strong>De Morgan 2:</strong> -(p∨q) ≡ -p∧-q &nbsp;|&nbsp; La negación de una disyunción es la conjunción de las negaciones.' },
+      { icon: '⚡', text: '<strong>Equivalencia p→q:</strong> p→q ≡ -p∨q &nbsp;|&nbsp; La implicación se puede reescribir como disyunción.' },
+      { icon: '⚡', text: '<strong>Tautología:</strong> p∨-p siempre es V &nbsp;|&nbsp; <strong>Contradicción:</strong> p∧-p siempre es F.' },
+      { icon: '⚡', text: '<strong>Doble negación:</strong> --p ≡ p.' }
+    ]
+  }
 ]; // fin CURRICULUM
 
 /* ------------------------------------------------------------------ */
