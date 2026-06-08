@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jugá con Martín – Lógica Computacional</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===== PANTALLA INICIO ===== -->
+  <div id="screen-start" class="screen active">
+    <div class="start-card">
+      <div class="start-logo">🐷</div>
+      <h1 class="start-title">Jugá con Martín</h1>
+      <p class="start-sub">IES9008 Manuel Belgrano</p>
+      <p class="start-course">Lógica Computacional</p>
+      <button id="btn-play" class="btn btn-primary btn-big">▶ Jugar</button>
+    </div>
+  </div>
+
+  <!-- ===== PANTALLA JUEGO ===== -->
+  <div id="screen-game" class="screen">
+    <!-- Barra superior -->
+    <header class="game-header">
+      <div class="header-left">
+        <span class="level-badge" id="level-badge">Nivel 1</span>
+      </div>
+      <div class="header-center">
+        <span class="course-tag">Lógica Computacional</span>
+      </div>
+      <div class="header-right">
+        <span class="score-display">⭐ <span id="score">0</span></span>
+      </div>
+    </header>
+
+    <!-- Barra de progreso -->
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <span class="progress-label" id="progress-label">0 / 0</span>
+    </div>
+
+    <!-- Contenido principal -->
+    <main class="game-main">
+
+      <!-- TARJETA DEFINICIÓN -->
+      <div id="card-definition" class="card card-def hidden">
+        <div class="card-type-badge">📖 Concepto</div>
+        <h2 class="def-title" id="def-title"></h2>
+        <div class="def-body" id="def-body"></div>
+        <button id="btn-continue-def" class="btn btn-continue">Continuar →</button>
+      </div>
+
+      <!-- TARJETA PREGUNTA -->
+      <div id="card-question" class="card card-q hidden">
+        <div class="card-type-badge" id="q-type-badge">❓ Pregunta</div>
+        <p class="q-number" id="q-number"></p>
+        <h3 class="q-text" id="q-text"></h3>
+        <div class="options-grid" id="options-grid"></div>
+
+        <!-- Justificación (segunda capa) -->
+        <div id="justification-wrap" class="hidden">
+          <p class="just-label">¿Por qué es correcta esa respuesta?</p>
+          <div class="options-grid" id="just-options-grid"></div>
+        </div>
+
+        <button id="btn-continue-q" class="btn btn-continue hidden">Continuar →</button>
+      </div>
+
+      <!-- TARJETA REPASO ACUMULATIVO -->
+      <div id="card-review" class="card card-review hidden">
+        <div class="card-type-badge">🔄 Mini Repaso</div>
+        <h3 class="review-title" id="review-title"></h3>
+        <div class="review-items" id="review-items"></div>
+        <button id="btn-continue-review" class="btn btn-continue">Continuar →</button>
+      </div>
+
+      <!-- TARJETA FIN DE JUEGO -->
+      <div id="card-end" class="card card-end hidden">
+        <div class="end-emoji">🐷</div>
+        <h2>¡Juego completado!</h2>
+        <p class="end-score">Puntuación final: <strong id="final-score">0</strong></p>
+        <p class="end-msg" id="end-msg"></p>
+        <button id="btn-restart" class="btn btn-primary">Jugar de nuevo</button>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===== POPUP FEEDBACK ===== -->
+  <div id="popup" class="popup hidden">
+    <div class="popup-inner" id="popup-inner">
+      <p class="popup-text" id="popup-text"></p>
+    </div>
+  </div>
+
+  <!-- AUDIO (Web Audio API — generado por JS) -->
+
+  <script src="script.js"></script>
+</body>
+</html>
