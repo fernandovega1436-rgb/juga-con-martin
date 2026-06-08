@@ -71,14 +71,11 @@ const CURRICULUM = [
   {
     type: 'definition',
     title: 'Bienvenida a la Lógica Computacional',
-    body: `La <strong>Lógica</strong> es la disciplina que estudia las reglas y principios del razonamiento válido. 
-En Ciencias de la Computación, la lógica formal sirve para:
+    body: `La <strong>Lógica</strong> es la disciplina que estudia las reglas y principios del razonamiento válido.
 <br><br>
-• <strong>Demostrar</strong> que los programas funcionan correctamente.<br>
-• <strong>Especificar</strong> el comportamiento de sistemas sin ambigüedad.<br>
-• <strong>Construir</strong> sistemas de inteligencia artificial (como PROLOG, surgido en 1972).
+Existen dos tipos principales de lógica formal: la <strong>Lógica Proposicional</strong> (de proposiciones) y la <strong>Lógica de Predicados</strong>.
 <br><br>
-Existen dos tipos principales de lógica formal: la <strong>Lógica Proposicional</strong> (de proposiciones) y la <strong>Lógica de Predicados</strong>.`
+A lo largo del juego vas a explorar los conceptos fundamentales de cada una, con definiciones, ejemplos y ejercicios de dificultad creciente.`
   },
 
   /* ══════════════════════════════════════════════════════
@@ -2729,10 +2726,15 @@ const progressFill  = $('progress-fill');
 const progressLabel = $('progress-label');
 const scoreEl       = $('score');
 const levelBadge    = $('level-badge');
+const btnPrev       = $('btn-prev');
+const btnExit       = $('btn-exit');
 
 /* ------------------------------------------------------------------ */
 /*  INICIALIZACIÓN                                                      */
 /* ------------------------------------------------------------------ */
+// Historial de navegación para el botón Anterior
+let navHistory = [];
+
 function buildSequence() {
   mainSequence = [...CURRICULUM];
   state.totalItems = mainSequence.length;
@@ -2743,6 +2745,7 @@ function buildSequence() {
   state.retryQueue = [];
   state.phase = 'main';
   state.awaitingJustification = false;
+  navHistory = [];
 }
 
 $('btn-play').addEventListener('click', () => {
@@ -2754,6 +2757,27 @@ $('btn-play').addEventListener('click', () => {
 $('btn-restart').addEventListener('click', () => {
   switchScreen(screenGame, screenStart);
 });
+
+// Botón ANTERIOR
+btnPrev.addEventListener('click', () => {
+  if (navHistory.length === 0) return;
+  state.currentIndex = navHistory.pop();
+  state.errorCount = 0;
+  state.awaitingJustification = false;
+  updateNavButtons();
+  showCurrentItem();
+});
+
+// Botón SALIR
+btnExit.addEventListener('click', () => {
+  if (confirm('¿Querés salir? Tu progreso actual se perderá.')) {
+    switchScreen(screenGame, screenStart);
+  }
+});
+
+function updateNavButtons() {
+  btnPrev.disabled = navHistory.length === 0;
+}
 
 /* ------------------------------------------------------------------ */
 /*  NAVEGACIÓN                                                          */
@@ -2791,6 +2815,7 @@ function showCurrentItem() {
   state.errorCount = 0;
   state.awaitingJustification = false;
   updateProgress();
+  updateNavButtons();
 
   const sequence = state.phase === 'main' ? mainSequence : state.retryQueue;
 
@@ -2825,6 +2850,7 @@ function showDefinition(item) {
   cardDef.classList.remove('hidden');
 
   $('btn-continue-def').onclick = () => {
+    navHistory.push(state.currentIndex);
     state.currentIndex++;
     showCurrentItem();
   };
@@ -2846,6 +2872,7 @@ function showReview(item) {
   cardReview.classList.remove('hidden');
 
   $('btn-continue-review').onclick = () => {
+    navHistory.push(state.currentIndex);
     state.currentIndex++;
     showCurrentItem();
   };
@@ -2906,6 +2933,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
         hidePopup();
         $('btn-continue-q').classList.remove('hidden');
         $('btn-continue-q').onclick = () => {
+          navHistory.push(state.currentIndex);
           state.currentIndex++;
           showCurrentItem();
         };
@@ -2972,6 +3000,7 @@ function showJustification(item) {
           hidePopup();
           $('btn-continue-q').classList.remove('hidden');
           $('btn-continue-q').onclick = () => {
+            navHistory.push(state.currentIndex);
             state.currentIndex++;
             showCurrentItem();
           };

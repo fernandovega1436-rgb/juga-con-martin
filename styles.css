@@ -163,6 +163,54 @@ html, body {
   font-weight: 700;
 }
 
+/* Nav bar (Anterior + Salir) */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .4rem 1.25rem;
+  background: var(--bg2);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  gap: .5rem;
+}
+
+.btn-nav {
+  background: rgba(255,255,255,.06);
+  border: 1.5px solid var(--card-border);
+  color: var(--text-muted);
+  font-size: .8rem;
+  padding: .4rem 1rem;
+  border-radius: 20px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+.btn-nav:hover:not(:disabled) {
+  background: rgba(0,212,255,.1);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-nav:disabled {
+  opacity: .3;
+  cursor: default;
+}
+
+.btn-exit {
+  background: rgba(231,76,60,.1);
+  border: 1.5px solid rgba(231,76,60,.4);
+  color: #e74c3c;
+  font-size: .8rem;
+  padding: .4rem 1rem;
+  border-radius: 20px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+.btn-exit:hover {
+  background: rgba(231,76,60,.22);
+  border-color: #e74c3c;
+}
+
 /* Progress bar */
 .progress-bar-wrap {
   display: flex;
