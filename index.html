@@ -67,9 +67,11 @@
       </div>
       <div class="header-center">
         <span class="course-tag">Lógica Computacional</span>
+        <span class="bloom-indicator" id="bloom-indicator"></span>
       </div>
       <div class="header-right">
         <span class="score-display">⭐ <span id="score">0</span></span>
+        <span class="streak-display" id="streak-display" style="display:none">🔥 <span id="streak-count">0</span></span>
         <button id="btn-music" class="btn-music" title="Música">🎵</button>
       </div>
     </header>
@@ -112,6 +114,11 @@
           <div class="options-grid" id="just-options-grid"></div>
         </div>
 
+        <div id="hint-box" class="hint-box hidden">
+          <span class="hint-icon">💡</span>
+          <span id="hint-text"></span>
+        </div>
+
         <button id="btn-continue-q" class="btn btn-continue hidden">Continuar →</button>
       </div>
 
@@ -125,11 +132,33 @@
 
       <!-- TARJETA FIN DE JUEGO -->
       <div id="card-end" class="card card-end hidden">
-        <div class="end-emoji">🐷</div>
-        <h2>¡Juego completado!</h2>
-        <p class="end-score">Puntuación final: <strong id="final-score">0</strong></p>
+        <div class="end-emoji">🎓</div>
+        <h2 class="end-title">¡Nivel completado!</h2>
+        <div class="end-stats">
+          <div class="stat-item">
+            <span class="stat-num" id="stat-correct">0</span>
+            <span class="stat-label">Correctas</span>
+          </div>
+          <div class="stat-item stat-wrong">
+            <span class="stat-num" id="stat-wrong">0</span>
+            <span class="stat-label">Incorrectas</span>
+          </div>
+          <div class="stat-item stat-streak">
+            <span class="stat-num" id="stat-streak">0</span>
+            <span class="stat-label">Racha máx.</span>
+          </div>
+          <div class="stat-item stat-score">
+            <span class="stat-num" id="final-score">0</span>
+            <span class="stat-label">Puntos</span>
+          </div>
+        </div>
+        <div class="end-bloom-badge" id="end-bloom-badge"></div>
         <p class="end-msg" id="end-msg"></p>
-        <button id="btn-restart" class="btn btn-primary">Jugar de nuevo</button>
+        <div class="end-suggestion" id="end-suggestion"></div>
+        <div class="end-buttons">
+          <button id="btn-restart" class="btn btn-primary">Jugar de nuevo</button>
+          <button id="btn-back-levels" class="btn btn-nav">← Ver niveles</button>
+        </div>
       </div>
 
     </main>

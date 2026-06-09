@@ -2713,7 +2713,9 @@ const state = {
   phase: 'main',          // 'main' | 'retry'
   retryQueue: [],
   awaitingJustification: false,
-  justAnsweredCorrect: false
+  justAnsweredCorrect: false,
+  streak: 0,
+  maxStreak: 0
 };
 
 // Separamos los ítems en secuencia principal + colchón de refuerzo
@@ -2742,120 +2744,303 @@ const btnPrev       = $('btn-prev');
 const btnExit       = $('btn-exit');
 
 /* ------------------------------------------------------------------ */
-/*  MÚSICA DE FONDO – Estilo cuarteto cordobés                         */
+/*  MÚSICA ELECTRÓNICA – 3 TRACKS QUE ROTAN CADA 90 SEGUNDOS          */
 /* ------------------------------------------------------------------ */
 let musicPlaying = false;
-let musicNodes   = [];
+let musicTimeout = null;
+let currentTrack = 0;
+let musicGainNode = null;
+
+// Track 0: House/Tech – bombo en cada beat, bajo sincopado
+function playTrack0(c, masterGain, duration) {
+  const BPM = 128, beat = 60/BPM;
+  let t = c.currentTime + 0.05;
+  const end = t + duration;
+  while (t < end) {
+    // Bombo (kick)
+    const kick = c.createOscillator();
+    const kickG = c.createGain();
+    kick.connect(kickG); kickG.connect(masterGain);
+    kick.type = 'sine';
+    kick.frequency.setValueAtTime(150, t);
+    kick.frequency.exponentialRampToValueAtTime(40, t + 0.15);
+    kickG.gain.setValueAtTime(0.5, t);
+    kickG.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+    kick.start(t); kick.stop(t + 0.2);
+
+    // Hi-hat en contratiempo
+    [beat*0.5, beat*1.5, beat*2.5, beat*3.5].forEach(offset => {
+      if (t + offset >= end) return;
+      const buf = c.createBuffer(1, c.sampleRate*0.04, c.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i=0; i<data.length; i++) data[i]=(Math.random()*2-1)*Math.exp(-i/(c.sampleRate*0.008));
+      const src = c.createBufferSource(); const hg = c.createGain();
+      const hf = c.createBiquadFilter(); hf.type='highpass'; hf.frequency.value=8000;
+      src.buffer=buf; src.connect(hf); hf.connect(hg); hg.connect(masterGain);
+      hg.gain.value=0.08; src.start(t+offset);
+    });
+
+    // Línea de bajo electrónico
+    const bassNotes = [55, 55, 62, 58, 55, 55, 67, 65];
+    bassNotes.forEach((freq, i) => {
+      const bt = t + i*(beat/2);
+      if (bt >= end) return;
+      const osc = c.createOscillator(); const bg = c.createGain();
+      const bf = c.createBiquadFilter(); bf.type='lowpass'; bf.frequency.value=400;
+      osc.connect(bf); bf.connect(bg); bg.connect(masterGain);
+      osc.type='sawtooth'; osc.frequency.value=freq;
+      bg.gain.setValueAtTime(0, bt);
+      bg.gain.linearRampToValueAtTime(0.15, bt+0.02);
+      bg.gain.exponentialRampToValueAtTime(0.001, bt+beat*0.45);
+      osc.start(bt); osc.stop(bt+beat*0.5);
+    });
+
+    t += beat * 4;
+  }
+}
+
+// Track 1: Synthwave – arpeggio melódico y pad
+function playTrack1(c, masterGain, duration) {
+  const BPM = 110, beat = 60/BPM;
+  const scale = [261, 293, 329, 392, 440, 523, 587, 659]; // C mayor
+  let t = c.currentTime + 0.05;
+  const end = t + duration;
+  while (t < end) {
+    // Pad de fondo
+    const pad = c.createOscillator(); const pg = c.createGain();
+    pad.connect(pg); pg.connect(masterGain);
+    pad.type='sine'; pad.frequency.value=130;
+    pg.gain.setValueAtTime(0,t); pg.gain.linearRampToValueAtTime(0.06, t+0.5);
+    pg.gain.linearRampToValueAtTime(0.06, t+beat*3.5);
+    pg.gain.linearRampToValueAtTime(0, t+beat*4);
+    pad.start(t); pad.stop(t+beat*4);
+
+    // Arpeggio ascendente
+    scale.forEach((freq, i) => {
+      const at = t + i*(beat/2);
+      if (at >= end) return;
+      const osc = c.createOscillator(); const ag = c.createGain();
+      const rev = c.createBiquadFilter(); rev.type='bandpass'; rev.frequency.value=freq*2; rev.Q.value=2;
+      osc.connect(rev); rev.connect(ag); ag.connect(masterGain);
+      osc.type='triangle'; osc.frequency.value=freq*2;
+      ag.gain.setValueAtTime(0,at); ag.gain.linearRampToValueAtTime(0.12,at+0.03);
+      ag.gain.exponentialRampToValueAtTime(0.001,at+beat*0.6);
+      osc.start(at); osc.stop(at+beat*0.7);
+    });
+
+    // Kick suave
+    [0, beat*2].forEach(offset => {
+      if (t+offset >= end) return;
+      const k = c.createOscillator(); const kg = c.createGain();
+      k.connect(kg); kg.connect(masterGain);
+      k.type='sine'; k.frequency.setValueAtTime(100,t+offset);
+      k.frequency.exponentialRampToValueAtTime(40,t+offset+0.1);
+      kg.gain.setValueAtTime(0.3,t+offset); kg.gain.exponentialRampToValueAtTime(0.001,t+offset+0.15);
+      k.start(t+offset); k.stop(t+offset+0.2);
+    });
+
+    t += beat * 8;
+  }
+}
+
+// Track 2: Drum & Bass relajado – ritmo rápido con melodía
+function playTrack2(c, masterGain, duration) {
+  const BPM = 140, beat = 60/BPM;
+  const melody = [392, 440, 494, 440, 392, 349, 392, 440];
+  let t = c.currentTime + 0.05;
+  const end = t + duration;
+  while (t < end) {
+    // Snare en beat 2 y 4
+    [beat, beat*3].forEach(offset => {
+      if (t+offset >= end) return;
+      const buf = c.createBuffer(1, c.sampleRate*0.12, c.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i=0; i<data.length; i++) data[i]=(Math.random()*2-1)*Math.exp(-i/(c.sampleRate*0.025));
+      const src = c.createBufferSource(); const sg = c.createGain();
+      src.buffer=buf; src.connect(sg); sg.connect(masterGain);
+      sg.gain.value=0.18; src.start(t+offset);
+    });
+
+    // Bombo sincopado
+    [0, beat*0.75, beat*2, beat*2.5].forEach(offset => {
+      if (t+offset >= end) return;
+      const k=c.createOscillator(); const kg=c.createGain();
+      k.connect(kg); kg.connect(masterGain);
+      k.type='sine'; k.frequency.setValueAtTime(120,t+offset);
+      k.frequency.exponentialRampToValueAtTime(40,t+offset+0.1);
+      kg.gain.setValueAtTime(0.35,t+offset); kg.gain.exponentialRampToValueAtTime(0.001,t+offset+0.12);
+      k.start(t+offset); k.stop(t+offset+0.15);
+    });
+
+    // Melodía
+    melody.forEach((freq,i) => {
+      const mt = t + i*(beat/2);
+      if (mt >= end) return;
+      const osc=c.createOscillator(); const mg2=c.createGain();
+      osc.connect(mg2); mg2.connect(masterGain);
+      osc.type='square'; osc.frequency.value=freq;
+      const detune=c.createOscillator(); const dg=c.createGain();
+      detune.connect(dg); dg.connect(masterGain);
+      detune.type='square'; detune.frequency.value=freq*1.005;
+      mg2.gain.setValueAtTime(0,mt); mg2.gain.linearRampToValueAtTime(0.06,mt+0.02);
+      mg2.gain.exponentialRampToValueAtTime(0.001,mt+beat*0.4);
+      dg.gain.setValueAtTime(0,mt); dg.gain.linearRampToValueAtTime(0.04,mt+0.02);
+      dg.gain.exponentialRampToValueAtTime(0.001,mt+beat*0.4);
+      osc.start(mt); osc.stop(mt+beat*0.5);
+      detune.start(mt); detune.stop(mt+beat*0.5);
+    });
+
+    t += beat * 8;
+  }
+}
 
 function startMusic() {
   if (musicPlaying) return;
   musicPlaying = true;
   const c = getCtx();
+  musicGainNode = c.createGain();
+  musicGainNode.gain.value = 0.4;
+  musicGainNode.connect(c.destination);
+  currentTrack = 0;
+  scheduleTrack();
+  syncMusicButtons();
+}
 
-  const BPM  = 120;
-  const beat = 60 / BPM; // 0.5 s por beat
+function scheduleTrack() {
+  if (!musicPlaying) return;
+  const c = getCtx();
+  const TRACK_DURATION = 90; // segundos por track
 
-  // Notas del bajo (patrón típico de cuarteto)
-  const bassPattern = [55, 55, 62, 62, 65, 65, 67, 67];
-
-  function scheduleBass(startTime) {
-    bassPattern.forEach((freq, i) => {
-      try {
-        const osc  = c.createOscillator();
-        const gain = c.createGain();
-        osc.connect(gain);
-        gain.connect(c.destination);
-        osc.type = 'triangle';
-        osc.frequency.value = freq;
-        const t = startTime + i * beat;
-        gain.gain.setValueAtTime(0, t);
-        gain.gain.linearRampToValueAtTime(0.18, t + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + beat * 0.8);
-        osc.start(t);
-        osc.stop(t + beat);
-        musicNodes.push(osc);
-      } catch(e) {}
-    });
+  // Fade in
+  if (musicGainNode) {
+    musicGainNode.gain.setValueAtTime(0, c.currentTime);
+    musicGainNode.gain.linearRampToValueAtTime(0.4, c.currentTime + 2);
   }
 
-  function scheduleDrum(startTime) {
-    // Bombo en tiempos 1 y 3
-    [0, beat * 2].forEach(offset => {
-      try {
-        const buf  = c.createBuffer(1, c.sampleRate * 0.3, c.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let i = 0; i < data.length; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.06));
-        }
-        const src    = c.createBufferSource();
-        const gain   = c.createGain();
-        const filter = c.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 150;
-        src.buffer = buf;
-        src.connect(filter);
-        filter.connect(gain);
-        gain.connect(c.destination);
-        gain.gain.value = 0.25;
-        src.start(startTime + offset);
-        musicNodes.push(src);
-      } catch(e) {}
-    });
+  if (currentTrack === 0) playTrack0(c, musicGainNode, TRACK_DURATION);
+  else if (currentTrack === 1) playTrack1(c, musicGainNode, TRACK_DURATION);
+  else playTrack2(c, musicGainNode, TRACK_DURATION);
 
-    // Redoblante en tiempos 2 y 4
-    [beat, beat * 3].forEach(offset => {
-      try {
-        const buf  = c.createBuffer(1, c.sampleRate * 0.15, c.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let i = 0; i < data.length; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.03));
-        }
-        const src  = c.createBufferSource();
-        const gain = c.createGain();
-        src.buffer = buf;
-        src.connect(gain);
-        gain.connect(c.destination);
-        gain.gain.value = 0.15;
-        src.start(startTime + offset);
-        musicNodes.push(src);
-      } catch(e) {}
-    });
-  }
-
-  let loopStart    = c.currentTime + 0.1;
-  const loopDuration = beat * 8;
-
-  function loop() {
+  // Fade out antes de cambiar
+  musicTimeout = setTimeout(() => {
     if (!musicPlaying) return;
-    scheduleBass(loopStart);
-    scheduleDrum(loopStart);
-    loopStart += loopDuration;
-    setTimeout(loop, (loopDuration - 0.5) * 1000);
-  }
-  loop();
+    if (musicGainNode) {
+      const c2 = getCtx();
+      musicGainNode.gain.linearRampToValueAtTime(0, c2.currentTime + 2);
+    }
+    setTimeout(() => {
+      currentTrack = (currentTrack + 1) % 3;
+      if (musicGainNode) {
+        const c3 = getCtx();
+        musicGainNode = c3.createGain();
+        musicGainNode.gain.value = 0;
+        musicGainNode.connect(c3.destination);
+      }
+      scheduleTrack();
+    }, 2500);
+  }, (TRACK_DURATION - 3) * 1000);
 }
 
 function stopMusic() {
   musicPlaying = false;
-  musicNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-  musicNodes = [];
+  if (musicTimeout) { clearTimeout(musicTimeout); musicTimeout = null; }
+  if (musicGainNode) {
+    try {
+      const c = getCtx();
+      musicGainNode.gain.linearRampToValueAtTime(0, c.currentTime + 0.5);
+    } catch(e) {}
+  }
+  syncMusicButtons();
 }
 
 function syncMusicButtons() {
   const icon = musicPlaying ? '🎵' : '🔇';
-  const mb = $('btn-music');
-  const mbs = $('btn-music-start');
-  if (mb)  mb.textContent  = icon;
-  if (mbs) mbs.textContent = icon;
+  const btnStart = document.getElementById('btn-music-start');
+  const btnGame = document.getElementById('btn-music');
+  if (btnStart) btnStart.textContent = icon;
+  if (btnGame) btnGame.textContent = icon;
 }
 
 function toggleMusic() {
-  if (musicPlaying) {
-    stopMusic();
+  if (musicPlaying) stopMusic(); else startMusic();
+}
+
+/* ------------------------------------------------------------------ */
+/*  RACHA (STREAK)                                                      */
+/* ------------------------------------------------------------------ */
+function updateStreak(correct) {
+  if (correct) {
+    state.streak++;
+    if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+    const el = document.getElementById('streak-display');
+    const cnt = document.getElementById('streak-count');
+    if (el && cnt) {
+      cnt.textContent = state.streak;
+      el.style.display = 'inline-flex';
+      if (state.streak >= 3) {
+        el.classList.add('streak-fire');
+        soundStreak();
+        showStreakBurst(state.streak);
+      }
+    }
   } else {
-    startMusic();
+    state.streak = 0;
+    const el = document.getElementById('streak-display');
+    if (el) { el.style.display = 'none'; el.classList.remove('streak-fire'); }
   }
-  syncMusicButtons();
+}
+
+function soundStreak() {
+  [880, 1100, 1320].forEach((f,i) => setTimeout(() => playTone(f,'sine',0.15,0.3), i*80));
+}
+
+function showStreakBurst(n) {
+  const burst = document.createElement('div');
+  burst.className = 'streak-burst';
+  burst.textContent = n >= 5 ? '🔥 ¡EN LLAMAS! x' + n : '🔥 Racha x' + n;
+  document.body.appendChild(burst);
+  setTimeout(() => burst.remove(), 1800);
+}
+
+/* ------------------------------------------------------------------ */
+/*  PISTAS PROGRESIVAS (HINT)                                           */
+/* ------------------------------------------------------------------ */
+function showHint(item) {
+  const hintBox = document.getElementById('hint-box');
+  const hintText = document.getElementById('hint-text');
+  if (!hintBox || !hintText) return;
+
+  // Generar hint automático basado en la respuesta correcta
+  const correct = item.options.find(o => o.correct);
+  if (!correct) return;
+
+  // Mostrar las primeras palabras de la respuesta correcta como pista
+  const words = correct.text.split(' ');
+  const hint = words.length <= 3
+    ? `La respuesta empieza con "${words[0]}"`
+    : `Pista: la respuesta correcta menciona "${words.slice(0,2).join(' ')}..."`;
+
+  hintText.textContent = hint;
+  hintBox.classList.remove('hidden');
+  hintBox.classList.add('hint-appear');
+}
+
+/* ------------------------------------------------------------------ */
+/*  INDICADOR BLOOM                                                     */
+/* ------------------------------------------------------------------ */
+function updateBloomIndicator(levelId) {
+  const el = document.getElementById('bloom-indicator');
+  if (!el) return;
+  const bloomLabels = [
+    { icon: '🧠', label: 'Recordar', color: '#4ade80' },
+    { icon: '💡', label: 'Comprender', color: '#60a5fa' },
+    { icon: '⚙️', label: 'Aplicar', color: '#fb923c' },
+    { icon: '🔬', label: 'Analizar', color: '#c084fc' },
+    { icon: '🏆', label: 'Evaluar', color: '#f472b6' }
+  ];
+  const lvl = bloomLabels[levelId] || bloomLabels[0];
+  el.innerHTML = `${lvl.icon} ${lvl.label}`;
+  el.style.color = lvl.color;
 }
 
 /* ------------------------------------------------------------------ */
@@ -3048,9 +3233,12 @@ function buildSequenceForLevel(levelId, startIdx) {
   state.retryQueue = [];
   state.phase = 'main';
   state.awaitingJustification = false;
+  state.streak = 0;
+  state.maxStreak = 0;
   navHistory = [];
   // Actualizar badge del nivel en header
   levelBadge.textContent = LEVELS[levelId].name;
+  updateBloomIndicator(levelId);
 }
 
 $('btn-play').addEventListener('click', () => {
@@ -3063,6 +3251,13 @@ $('btn-levels-back').addEventListener('click', () => {
 });
 
 $('btn-restart').addEventListener('click', () => {
+  stopMusic();
+  syncMusicButtons();
+  renderLevelsGrid();
+  switchScreen(screenGame, screenLevels);
+});
+
+$('btn-back-levels').addEventListener('click', () => {
   stopMusic();
   syncMusicButtons();
   renderLevelsGrid();
@@ -3226,6 +3421,9 @@ function showQuestion(item) {
   const btnContinue = $('btn-continue-q');
   btnContinue.classList.add('hidden');
 
+  // Ocultar hint al inicio
+  document.getElementById('hint-box')?.classList.add('hidden');
+
   cardQ.classList.remove('hidden');
 
   item.options.forEach((opt, idx) => {
@@ -3248,6 +3446,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
     btn.classList.add('correct');
     soundSuccess();
     showPopup(true, '🐷 ¡Excelente cabeza de chancho!');
+    if (!state.awaitingJustification) updateStreak(true);
 
     if (!state.awaitingJustification && item.justification) {
       // Hay justificación: mostrarla sin avanzar aún
@@ -3275,6 +3474,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
     showPopup(false, '🔔 ¡Te equivocaste chinchulín!');
     state.errorCount++;
     state.wrongAnswerCount++;
+    if (!state.awaitingJustification) updateStreak(false);
 
     // Re-habilitar botones correctos para reintentar
     setTimeout(() => {
@@ -3285,7 +3485,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
         }
       });
 
-      // Si erró 2 veces → marcar tema difícil
+      // Si erró 2 veces → marcar tema difícil y mostrar hint
       if (state.errorCount >= 2) {
         const sequence = state.phase === 'main' ? mainSequence : state.retryQueue;
         const currentItem = sequence[state.currentIndex];
@@ -3295,6 +3495,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
           // Crear variante de refuerzo si la tiene, o re-usar el mismo ítem
           state.retryQueue.push(currentItem);
         }
+        showHint(item);
       }
     }, 1500);
   }
@@ -3324,6 +3525,7 @@ function showJustification(item) {
         btn.classList.add('correct');
         soundSuccess();
         showPopup(true, '🐷 ¡Excelente cabeza de chancho!');
+        updateStreak(true);
         state.score += (state.errorCount === 0 ? 10 : 5);
         scoreEl.textContent = state.score;
         setTimeout(() => {
@@ -3339,6 +3541,7 @@ function showJustification(item) {
         btn.classList.add('wrong');
         soundError();
         showPopup(false, '🔔 ¡Te equivocaste chinchulín!');
+        updateStreak(false);
         setTimeout(() => {
           hidePopup();
           allJ.forEach(b => {
@@ -3374,24 +3577,46 @@ function showEndCard() {
   const levelId = state._levelId || 0;
   markLevelDone(levelId, state.score);
 
-  // Mostrar popup Fernet antes de la tarjeta final
-  showFernetPopup(() => {
-    hideAllCards();
-    cardEnd.classList.remove('hidden');
-    $('final-score').textContent = state.score;
+  hideAllCards();
+  cardEnd.classList.remove('hidden');
 
-    const total = mainSequence.length;
-    const pct   = total > 0 ? Math.round((state.score / (total * 10)) * 100) : 0;
-    let msg = '';
-    if (pct >= 90)      msg = '¡Sos un crack de la lógica! 🧠';
-    else if (pct >= 70) msg = '¡Muy bien! Dominás los conceptos principales.';
-    else if (pct >= 50) msg = 'Bien encaminado, seguí practicando.';
-    else                msg = 'Revisá los apuntes y volvé a intentarlo. ¡Podés!';
+  const total = mainSequence.length;
+  const wrong = state.wrongAnswerCount;
 
-    $('end-msg').textContent = msg;
-    progressFill.style.width = '100%';
-    progressLabel.textContent = 'Completado';
-  });
+  document.getElementById('stat-correct').textContent = Math.round(state.score / 8);
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-streak').textContent = state.maxStreak || 0;
+  document.getElementById('final-score').textContent = state.score;
+
+  const pct = total > 0 ? Math.round((state.score / (total * 10)) * 100) : 0;
+
+  let msg = '', suggestion = '', bloomMsg = '';
+  if (pct >= 90) {
+    msg = '¡Dominio excelente! Sos un crack de la lógica. 🧠';
+    suggestion = '✨ Estás listo para el siguiente nivel.';
+    bloomMsg = '🏆 Nivel cognitivo alcanzado: <strong>Síntesis y Evaluación</strong>';
+  } else if (pct >= 70) {
+    msg = '¡Muy bien! Dominás los conceptos principales.';
+    suggestion = '📖 Repasá los temas donde cometiste errores antes de avanzar.';
+    bloomMsg = '💡 Nivel cognitivo alcanzado: <strong>Análisis</strong>';
+  } else if (pct >= 50) {
+    msg = 'Bien encaminado, seguí practicando.';
+    suggestion = '🔄 Te recomendamos repetir este nivel para consolidar el aprendizaje.';
+    bloomMsg = '⚙️ Nivel cognitivo: <strong>Comprensión en desarrollo</strong>';
+  } else {
+    msg = '¡No te rindas! La práctica hace al maestro.';
+    suggestion = '📚 Revisá los apuntes y volvé a intentarlo. Cada intento mejora.';
+    bloomMsg = '🧠 Nivel cognitivo: <strong>Recordar — seguí construyendo</strong>';
+  }
+
+  document.getElementById('end-msg').textContent = msg;
+  document.getElementById('end-suggestion').innerHTML = suggestion;
+  document.getElementById('end-bloom-badge').innerHTML = bloomMsg;
+
+  progressFill.style.width = '100%';
+  progressLabel.textContent = 'Completado';
+
+  showFernetPopup(() => {});
 }
 
 /* ------------------------------------------------------------------ */
