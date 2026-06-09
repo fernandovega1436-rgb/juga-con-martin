@@ -36,6 +36,11 @@ html, body {
 .screen { display: none; }
 .screen.active { display: flex; height: 100vh; overflow: hidden; }
 
+/* La pantalla de juego necesita scroll interno en su contenido */
+#screen-game { overflow: hidden; }
+#screen-start { overflow: auto; }
+#screen-levels { overflow: auto; }
+
 /* ===== PANTALLA INICIO ===== */
 #screen-start {
   align-items: center;
@@ -309,6 +314,8 @@ html, body {
   align-items: flex-start;
   justify-content: center;
   padding: 1.5rem 1rem 3rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ===== CARDS ===== */
