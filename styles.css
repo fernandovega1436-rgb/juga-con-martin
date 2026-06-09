@@ -554,51 +554,58 @@ html, body {
   align-items: center;
   justify-content: center;
   background: radial-gradient(ellipse at 50% 30%, #112f5a 0%, var(--bg) 70%);
+  height: 100vh;
+  overflow: hidden;
+  padding: 0.5rem;
+  box-sizing: border-box;
 }
 
 .levels-card {
   text-align: center;
-  padding: 2.5rem 2rem;
+  padding: 1.2rem 1.5rem;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 24px;
+  border-radius: 20px;
   box-shadow: var(--shadow), 0 0 60px rgba(0,212,255,.08);
-  max-width: 560px;
+  max-width: 520px;
   width: 95%;
   animation: fadeInUp .6s ease;
+  max-height: 98vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .levels-title {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 800;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: .4rem;
+  margin-bottom: .2rem;
 }
 
 .levels-sub {
-  font-size: .95rem;
+  font-size: .82rem;
   color: var(--text-muted);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.8rem;
 }
 
 .levels-grid {
   display: flex;
   flex-direction: column;
-  gap: .75rem;
-  margin-bottom: 1.5rem;
+  gap: .45rem;
+  margin-bottom: 0.8rem;
 }
 
 .level-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: .9rem 1.2rem;
+  gap: .75rem;
+  padding: .6rem 1rem;
   background: rgba(255,255,255,.04);
   border: 2px solid transparent;
-  border-radius: 14px;
+  border-radius: 12px;
   cursor: pointer;
   transition: var(--transition);
   text-align: left;
@@ -612,7 +619,7 @@ html, body {
 }
 
 .level-icon {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   flex-shrink: 0;
 }
 
@@ -621,13 +628,13 @@ html, body {
 }
 
 .level-name {
-  font-size: 1rem;
+  font-size: .9rem;
   font-weight: 700;
   display: block;
 }
 
 .level-bloom {
-  font-size: .8rem;
+  font-size: .72rem;
   color: var(--text-muted);
   display: block;
   margin-top: .1rem;
