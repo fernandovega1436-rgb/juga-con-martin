@@ -536,3 +536,233 @@ html, body {
   .q-text { font-size: 1rem; }
   .start-card { padding: 2rem 1.25rem; }
 }
+
+/* ===== NUEVOS ESTILOS – APRENDE JUGANDO ===== */
+
+/* Subtítulo Bloom en portada */
+.start-bloom {
+  font-size: 0.85rem;
+  color: #FFD700;
+  font-style: italic;
+  margin: 4px 0 12px;
+  text-align: center;
+  max-width: 340px;
+}
+
+/* ===== PANTALLA SELECTOR DE NIVEL ===== */
+#screen-levels {
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 30%, #112f5a 0%, var(--bg) 70%);
+}
+
+.levels-card {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  box-shadow: var(--shadow), 0 0 60px rgba(0,212,255,.08);
+  max-width: 560px;
+  width: 95%;
+  animation: fadeInUp .6s ease;
+}
+
+.levels-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: .4rem;
+}
+
+.levels-sub {
+  font-size: .95rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.levels-grid {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  margin-bottom: 1.5rem;
+}
+
+.level-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .9rem 1.2rem;
+  background: rgba(255,255,255,.04);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  width: 100%;
+  color: var(--text);
+}
+
+.level-item:hover {
+  background: rgba(255,255,255,.08);
+  transform: translateX(4px);
+}
+
+.level-icon {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.level-info {
+  flex: 1;
+}
+
+.level-name {
+  font-size: 1rem;
+  font-weight: 700;
+  display: block;
+}
+
+.level-bloom {
+  font-size: .8rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: .1rem;
+}
+
+.level-badge-status {
+  font-size: .75rem;
+  font-weight: 700;
+  padding: .25rem .65rem;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.badge-done {
+  background: rgba(46,204,113,.2);
+  color: #2ecc71;
+  border: 1px solid #2ecc71;
+}
+
+.badge-progress {
+  background: rgba(245,166,35,.2);
+  color: #f5a623;
+  border: 1px solid #f5a623;
+}
+
+/* Dialog para continuar/reiniciar nivel */
+.level-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  animation: fadeIn .2s ease;
+}
+
+.level-dialog {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  text-align: center;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: var(--shadow);
+  animation: popIn .3s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+
+.level-dialog h3 {
+  font-size: 1.2rem;
+  color: var(--accent);
+  margin-bottom: .75rem;
+}
+
+.level-dialog p {
+  color: var(--text-muted);
+  font-size: .95rem;
+  margin-bottom: 1.2rem;
+}
+
+.level-dialog-btns {
+  display: flex;
+  gap: .75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ===== POPUP FERNET ===== */
+.popup-fernet {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+.popup-fernet.hidden { display: none; }
+
+.fernet-inner {
+  background: linear-gradient(135deg, #1a0a00, #3d1c00);
+  border: 3px solid #FFD700;
+  border-radius: 20px;
+  padding: 40px 50px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(255,215,0,0.4);
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fernet-emoji { font-size: 4rem; margin-bottom: 16px; }
+
+.fernet-title {
+  color: #FFD700;
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 0 0 8px;
+  text-shadow: 0 0 20px rgba(255,215,0,0.6);
+}
+
+.fernet-sub { color: #fff; font-size: 1.1rem; margin-bottom: 24px; }
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ===== BOTÓN MÚSICA ===== */
+.btn-music {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: .6rem;
+}
+.btn-music:hover { background: rgba(255,255,255,0.2); }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.header-right .btn-music {
+  margin-top: 0;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
+}

@@ -48,6 +48,17 @@ function soundSuccess() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  NIVELES (Taxonomía de Bloom)                                       */
+/* ------------------------------------------------------------------ */
+const LEVELS = [
+  { id: 0, name: 'Nivel 1 – Recordar',   bloom: 'Conocimiento básico',      icon: '🧠', color: '#4CAF50', startIndex: 0,   endIndex: 25   },
+  { id: 1, name: 'Nivel 2 – Comprender', bloom: 'Comprensión de conceptos', icon: '💡', color: '#2196F3', startIndex: 26,  endIndex: 70   },
+  { id: 2, name: 'Nivel 3 – Aplicar',    bloom: 'Aplicación práctica',      icon: '⚙️', color: '#FF9800', startIndex: 71,  endIndex: 120  },
+  { id: 3, name: 'Nivel 4 – Analizar',   bloom: 'Análisis y síntesis',      icon: '🔬', color: '#9C27B0', startIndex: 121, endIndex: 173  },
+  { id: 4, name: 'Nivel 5 – Evaluar',    bloom: 'Evaluación integradora',   icon: '🏆', color: '#F44336', startIndex: 174, endIndex: 9999 }
+];
+
+/* ------------------------------------------------------------------ */
 /*  CONTENIDOS PEDAGÓGICOS                                             */
 /*  Estructura: array de "unidades" en orden de dificultad creciente  */
 /*  Cada unidad tiene: definición (opcional) y preguntas              */
@@ -2714,6 +2725,7 @@ const RETRY_POOL = [];
 /* ------------------------------------------------------------------ */
 const $ = id => document.getElementById(id);
 const screenStart   = $('screen-start');
+const screenLevels  = $('screen-levels');
 const screenGame    = $('screen-game');
 const cardDef       = $('card-definition');
 const cardQ         = $('card-question');
@@ -2730,13 +2742,304 @@ const btnPrev       = $('btn-prev');
 const btnExit       = $('btn-exit');
 
 /* ------------------------------------------------------------------ */
+/*  MÚSICA DE FONDO – Estilo cuarteto cordobés                         */
+/* ------------------------------------------------------------------ */
+let musicPlaying = false;
+let musicNodes   = [];
+
+function startMusic() {
+  if (musicPlaying) return;
+  musicPlaying = true;
+  const c = getCtx();
+
+  const BPM  = 120;
+  const beat = 60 / BPM; // 0.5 s por beat
+
+  // Notas del bajo (patrón típico de cuarteto)
+  const bassPattern = [55, 55, 62, 62, 65, 65, 67, 67];
+
+  function scheduleBass(startTime) {
+    bassPattern.forEach((freq, i) => {
+      try {
+        const osc  = c.createOscillator();
+        const gain = c.createGain();
+        osc.connect(gain);
+        gain.connect(c.destination);
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        const t = startTime + i * beat;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.18, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + beat * 0.8);
+        osc.start(t);
+        osc.stop(t + beat);
+        musicNodes.push(osc);
+      } catch(e) {}
+    });
+  }
+
+  function scheduleDrum(startTime) {
+    // Bombo en tiempos 1 y 3
+    [0, beat * 2].forEach(offset => {
+      try {
+        const buf  = c.createBuffer(1, c.sampleRate * 0.3, c.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.06));
+        }
+        const src    = c.createBufferSource();
+        const gain   = c.createGain();
+        const filter = c.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 150;
+        src.buffer = buf;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(c.destination);
+        gain.gain.value = 0.25;
+        src.start(startTime + offset);
+        musicNodes.push(src);
+      } catch(e) {}
+    });
+
+    // Redoblante en tiempos 2 y 4
+    [beat, beat * 3].forEach(offset => {
+      try {
+        const buf  = c.createBuffer(1, c.sampleRate * 0.15, c.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.03));
+        }
+        const src  = c.createBufferSource();
+        const gain = c.createGain();
+        src.buffer = buf;
+        src.connect(gain);
+        gain.connect(c.destination);
+        gain.gain.value = 0.15;
+        src.start(startTime + offset);
+        musicNodes.push(src);
+      } catch(e) {}
+    });
+  }
+
+  let loopStart    = c.currentTime + 0.1;
+  const loopDuration = beat * 8;
+
+  function loop() {
+    if (!musicPlaying) return;
+    scheduleBass(loopStart);
+    scheduleDrum(loopStart);
+    loopStart += loopDuration;
+    setTimeout(loop, (loopDuration - 0.5) * 1000);
+  }
+  loop();
+}
+
+function stopMusic() {
+  musicPlaying = false;
+  musicNodes.forEach(n => { try { n.stop(); } catch(e) {} });
+  musicNodes = [];
+}
+
+function syncMusicButtons() {
+  const icon = musicPlaying ? '🎵' : '🔇';
+  const mb = $('btn-music');
+  const mbs = $('btn-music-start');
+  if (mb)  mb.textContent  = icon;
+  if (mbs) mbs.textContent = icon;
+}
+
+function toggleMusic() {
+  if (musicPlaying) {
+    stopMusic();
+  } else {
+    startMusic();
+  }
+  syncMusicButtons();
+}
+
+/* ------------------------------------------------------------------ */
+/*  POPUP FERNET                                                        */
+/* ------------------------------------------------------------------ */
+function soundFernet() {
+  const notes = [523, 659, 784, 1047, 784, 1047, 1319];
+  notes.forEach((f, i) => {
+    setTimeout(() => playTone(f, 'sine', 0.3, 0.6), i * 100);
+  });
+  setTimeout(() => {
+    try {
+      const c      = getCtx();
+      const buf    = c.createBuffer(1, c.sampleRate * 0.8, c.sampleRate);
+      const data   = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.15));
+      }
+      const src    = c.createBufferSource();
+      const gain   = c.createGain();
+      const filter = c.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1200;
+      filter.Q.value = 0.5;
+      src.buffer = buf;
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(c.destination);
+      gain.gain.value = 0.3;
+      src.start();
+    } catch(e) {}
+  }, 400);
+}
+
+function showFernetPopup(onClose) {
+  soundFernet();
+  const fernetEl = $('popup-fernet');
+  fernetEl.classList.remove('hidden');
+  $('btn-fernet-close').onclick = () => {
+    fernetEl.classList.add('hidden');
+    if (typeof onClose === 'function') onClose();
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/*  PROGRESO – localStorage                                            */
+/* ------------------------------------------------------------------ */
+const LS_PREFIX = 'aprendejugando_level_';
+
+function saveProgress(levelId, index, score) {
+  localStorage.setItem(LS_PREFIX + levelId + '_index', index);
+  localStorage.setItem(LS_PREFIX + levelId + '_score', score);
+}
+
+function markLevelDone(levelId, score) {
+  localStorage.setItem(LS_PREFIX + levelId + '_done', 'true');
+  localStorage.setItem(LS_PREFIX + levelId + '_score', score);
+}
+
+function loadProgress(levelId) {
+  const done  = localStorage.getItem(LS_PREFIX + levelId + '_done') === 'true';
+  const index = parseInt(localStorage.getItem(LS_PREFIX + levelId + '_index') || '0', 10);
+  const score = parseInt(localStorage.getItem(LS_PREFIX + levelId + '_score') || '0', 10);
+  return { done, index, score };
+}
+
+function clearProgress(levelId) {
+  localStorage.removeItem(LS_PREFIX + levelId + '_done');
+  localStorage.removeItem(LS_PREFIX + levelId + '_index');
+  localStorage.removeItem(LS_PREFIX + levelId + '_score');
+}
+
+/* ------------------------------------------------------------------ */
+/*  SELECTOR DE NIVELES                                                 */
+/* ------------------------------------------------------------------ */
+let currentLevelId = 0; // nivel actualmente jugado
+
+function renderLevelsGrid() {
+  const grid = $('levels-grid');
+  grid.innerHTML = '';
+
+  LEVELS.forEach(lvl => {
+    const progress = loadProgress(lvl.id);
+    const btn = document.createElement('button');
+    btn.className = 'level-item';
+    btn.style.borderColor = lvl.color;
+
+    let badgeHTML = '';
+    if (progress.done) {
+      badgeHTML = `<span class="level-badge-status badge-done">✓ Completado</span>`;
+    } else if (progress.index > 0) {
+      badgeHTML = `<span class="level-badge-status badge-progress">En progreso</span>`;
+    }
+
+    btn.innerHTML = `
+      <span class="level-icon">${lvl.icon}</span>
+      <span class="level-info">
+        <span class="level-name">${lvl.name}</span>
+        <span class="level-bloom">${lvl.bloom}</span>
+      </span>
+      ${badgeHTML}
+    `;
+
+    btn.addEventListener('click', () => {
+      const prog = loadProgress(lvl.id);
+      if (prog.index > 0 && !prog.done) {
+        // Nivel en progreso: preguntar continuar o empezar
+        showLevelDialog(lvl, prog);
+      } else if (prog.done) {
+        // Nivel completado: preguntar si quiere repetir
+        showLevelDialog(lvl, prog);
+      } else {
+        startLevel(lvl.id, 0);
+      }
+    });
+
+    grid.appendChild(btn);
+  });
+}
+
+function showLevelDialog(lvl, prog) {
+  // Crear overlay de diálogo
+  const overlay = document.createElement('div');
+  overlay.className = 'level-dialog-overlay';
+
+  const msg = prog.done
+    ? '¿Deséas jugar de nuevo este nivel?'
+    : `¿Querés continuar donde dejaste (punto ${prog.index}) o empezar desde el inicio?`;
+
+  overlay.innerHTML = `
+    <div class="level-dialog">
+      <h3>${lvl.icon} ${lvl.name}</h3>
+      <p>${msg}</p>
+      <div class="level-dialog-btns">
+        <button id="dlg-continue" class="btn btn-primary">Continuar</button>
+        <button id="dlg-restart" class="btn btn-nav">Empezar de nuevo</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#dlg-continue').addEventListener('click', () => {
+    document.body.removeChild(overlay);
+    startLevel(lvl.id, prog.done ? 0 : prog.index);
+  });
+  overlay.querySelector('#dlg-restart').addEventListener('click', () => {
+    clearProgress(lvl.id);
+    document.body.removeChild(overlay);
+    startLevel(lvl.id, 0);
+  });
+  // Cerrar al hacer click fuera
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) document.body.removeChild(overlay);
+  });
+}
+
+function startLevel(levelId, startIdx) {
+  currentLevelId = levelId;
+  buildSequenceForLevel(levelId, startIdx);
+  switchScreen(screenLevels, screenGame);
+  startMusic();
+  syncMusicButtons();
+  showCurrentItem();
+}
+
+/* ------------------------------------------------------------------ */
 /*  INICIALIZACIÓN                                                      */
 /* ------------------------------------------------------------------ */
 // Historial de navegación para el botón Anterior
 let navHistory = [];
 
 function buildSequence() {
-  mainSequence = [...CURRICULUM];
+  buildSequenceForLevel(0, 0);
+}
+
+function buildSequenceForLevel(levelId, startIdx) {
+  const lvl = LEVELS[levelId];
+  const end = Math.min(lvl.endIndex + 1, CURRICULUM.length);
+  const slice = CURRICULUM.slice(lvl.startIndex, end);
+  // Offset dentro del slice
+  const offsetInSlice = Math.max(0, startIdx - lvl.startIndex);
+  mainSequence = slice.slice(offsetInSlice);
+  state._levelStartSliceIndex = lvl.startIndex + offsetInSlice;
+  state._levelId = levelId;
   state.totalItems = mainSequence.length;
   state.currentIndex = 0;
   state.score = 0;
@@ -2746,17 +3049,30 @@ function buildSequence() {
   state.phase = 'main';
   state.awaitingJustification = false;
   navHistory = [];
+  // Actualizar badge del nivel en header
+  levelBadge.textContent = LEVELS[levelId].name;
 }
 
 $('btn-play').addEventListener('click', () => {
-  buildSequence();
-  switchScreen(screenStart, screenGame);
-  showCurrentItem();
+  renderLevelsGrid();
+  switchScreen(screenStart, screenLevels);
+});
+
+$('btn-levels-back').addEventListener('click', () => {
+  switchScreen(screenLevels, screenStart);
 });
 
 $('btn-restart').addEventListener('click', () => {
-  switchScreen(screenGame, screenStart);
+  stopMusic();
+  syncMusicButtons();
+  renderLevelsGrid();
+  switchScreen(screenGame, screenLevels);
 });
+
+// Botón MÚSICA en juego
+$('btn-music').addEventListener('click', toggleMusic);
+// Botón MÚSICA en portada
+$('btn-music-start').addEventListener('click', toggleMusic);
 
 // Botón ANTERIOR
 btnPrev.addEventListener('click', () => {
@@ -2771,7 +3087,14 @@ btnPrev.addEventListener('click', () => {
 // Botón SALIR
 btnExit.addEventListener('click', () => {
   if (confirm('¿Querés salir? Tu progreso actual se perderá.')) {
-    switchScreen(screenGame, screenStart);
+    stopMusic();
+    syncMusicButtons();
+    // Guardar progreso actual
+    const lvl = LEVELS[state._levelId || 0];
+    const absoluteIndex = lvl.startIndex + state.currentIndex;
+    saveProgress(state._levelId || 0, absoluteIndex, state.score);
+    renderLevelsGrid();
+    switchScreen(screenGame, screenLevels);
   }
 });
 
@@ -2816,6 +3139,13 @@ function showCurrentItem() {
   state.awaitingJustification = false;
   updateProgress();
   updateNavButtons();
+
+  // Guardar progreso automáticamente
+  if (state._levelId !== undefined) {
+    const lvl = LEVELS[state._levelId];
+    const absoluteIndex = lvl.startIndex + state.currentIndex;
+    saveProgress(state._levelId, absoluteIndex, state.score);
+  }
 
   const sequence = state.phase === 'main' ? mainSequence : state.retryQueue;
 
@@ -3040,21 +3370,28 @@ function hidePopup() {
 /*  TARJETA FINAL                                                       */
 /* ------------------------------------------------------------------ */
 function showEndCard() {
-  hideAllCards();
-  cardEnd.classList.remove('hidden');
-  $('final-score').textContent = state.score;
+  // Guardar nivel como completado
+  const levelId = state._levelId || 0;
+  markLevelDone(levelId, state.score);
 
-  const total = mainSequence.length;
-  const pct   = Math.round((state.score / (total * 10)) * 100);
-  let msg = '';
-  if (pct >= 90)      msg = '¡Sos un crack de la lógica! 🧠';
-  else if (pct >= 70) msg = '¡Muy bien! Dominás los conceptos principales.';
-  else if (pct >= 50) msg = 'Bien encaminado, seguí practicando.';
-  else                msg = 'Revisá los apuntes y volvé a intentarlo. ¡Podés!';
+  // Mostrar popup Fernet antes de la tarjeta final
+  showFernetPopup(() => {
+    hideAllCards();
+    cardEnd.classList.remove('hidden');
+    $('final-score').textContent = state.score;
 
-  $('end-msg').textContent = msg;
-  progressFill.style.width = '100%';
-  progressLabel.textContent = 'Completado';
+    const total = mainSequence.length;
+    const pct   = total > 0 ? Math.round((state.score / (total * 10)) * 100) : 0;
+    let msg = '';
+    if (pct >= 90)      msg = '¡Sos un crack de la lógica! 🧠';
+    else if (pct >= 70) msg = '¡Muy bien! Dominás los conceptos principales.';
+    else if (pct >= 50) msg = 'Bien encaminado, seguí practicando.';
+    else                msg = 'Revisá los apuntes y volvé a intentarlo. ¡Podés!';
+
+    $('end-msg').textContent = msg;
+    progressFill.style.width = '100%';
+    progressLabel.textContent = 'Completado';
+  });
 }
 
 /* ------------------------------------------------------------------ */

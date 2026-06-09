@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jugá con Martín – Lógica Computacional</title>
+  <title>Aprende Jugando – Lógica Computacional</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,10 +12,12 @@
   <div id="screen-start" class="screen active">
     <div class="start-card">
       <div class="start-logo">🇦🇷</div>
-      <h1 class="start-title">Jugá con Martín</h1>
+      <h1 class="start-title">Aprende Jugando</h1>
+      <p class="start-bloom">Diseñado bajo los principios pedagógicos de la Taxonomía de Bloom</p>
       <p class="start-sub">IES9008 Manuel Belgrano</p>
       <p class="start-course">Lógica Computacional</p>
       <button id="btn-play" class="btn btn-primary btn-big">▶ Jugar</button>
+      <button id="btn-music-start" class="btn-music" title="Música">🎵</button>
 
       <!-- Botones de contacto 3D -->
       <div class="contact-buttons">
@@ -44,6 +46,18 @@
     </div>
   </div>
 
+  <!-- ===== PANTALLA SELECTOR DE NIVEL ===== -->
+  <div id="screen-levels" class="screen">
+    <div class="levels-card">
+      <h2 class="levels-title">Elegí tu nivel</h2>
+      <p class="levels-sub">Podés continuar desde donde dejaste</p>
+      <div class="levels-grid" id="levels-grid">
+        <!-- generado por JS -->
+      </div>
+      <button id="btn-levels-back" class="btn btn-nav">← Volver</button>
+    </div>
+  </div>
+
   <!-- ===== PANTALLA JUEGO ===== -->
   <div id="screen-game" class="screen">
     <!-- Barra superior -->
@@ -56,6 +70,7 @@
       </div>
       <div class="header-right">
         <span class="score-display">⭐ <span id="score">0</span></span>
+        <button id="btn-music" class="btn-music" title="Música">🎵</button>
       </div>
     </header>
 
@@ -124,6 +139,16 @@
   <div id="popup" class="popup hidden">
     <div class="popup-inner" id="popup-inner">
       <p class="popup-text" id="popup-text"></p>
+    </div>
+  </div>
+
+  <!-- POPUP FERNET -->
+  <div id="popup-fernet" class="popup-fernet hidden">
+    <div class="fernet-inner">
+      <div class="fernet-emoji">🍾🥃</div>
+      <h2 class="fernet-title">¡Te Ganaste un Fernet!!!</h2>
+      <p class="fernet-sub">Nivel completado con éxito</p>
+      <button id="btn-fernet-close" class="btn btn-primary">¡Dale!</button>
     </div>
   </div>
 
