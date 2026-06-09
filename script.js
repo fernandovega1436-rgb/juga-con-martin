@@ -3337,8 +3337,10 @@ function updateNavButtons() {
 /* ------------------------------------------------------------------ */
 function switchScreen(from, to) {
   from.classList.remove('active');
+  from.style.display = 'none';   // ocultar pantalla anterior
   to.style.display = 'flex';
   to.classList.add('active');
+  window.scrollTo(0, 0);         // siempre arrancar desde arriba
 }
 
 function hideAllCards() {

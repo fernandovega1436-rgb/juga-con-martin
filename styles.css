@@ -34,12 +34,15 @@ html, body {
 
 /* ---------- SCREENS ---------- */
 .screen { display: none; }
-.screen.active { display: flex; height: 100vh; overflow: hidden; }
+.screen.active {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport height en mobile */
+}
 
-/* La pantalla de juego necesita scroll interno en su contenido */
-#screen-game { overflow: hidden; }
-#screen-start { overflow: auto; }
-#screen-levels { overflow: auto; }
+#screen-start  { overflow-y: auto; }
+#screen-levels { overflow-y: auto; }
+#screen-game   { height: 100vh; height: 100dvh; overflow: hidden; flex-direction: column; }
 
 /* ===== PANTALLA INICIO ===== */
 #screen-start {
@@ -561,9 +564,7 @@ html, body {
   align-items: center;
   justify-content: center;
   background: radial-gradient(ellipse at 50% 30%, #112f5a 0%, var(--bg) 70%);
-  height: 100vh;
-  overflow: hidden;
-  padding: 0.5rem;
+  padding: 1rem 0.5rem;
   box-sizing: border-box;
 }
 
@@ -945,4 +946,20 @@ html, body {
 /* --- Responsive end-stats --- */
 @media (max-width: 480px) {
   .end-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===== PANTALLA DE NIVELES – MOBILE FIRST ===== */
+@media (max-height: 750px) {
+  /* Celulares con pantalla chica: comprimir todo al máximo */
+  .levels-card {
+    padding: 0.8rem 1rem;
+  }
+  .levels-title { font-size: 1.1rem; margin-bottom: .1rem; }
+  .levels-sub   { font-size: .72rem; margin-bottom: .5rem; }
+  .levels-grid  { gap: .3rem; margin-bottom: .5rem; }
+  .level-item   { padding: .45rem .75rem; }
+  .level-icon   { font-size: 1.1rem; }
+  .level-name   { font-size: .82rem; }
+  .level-bloom  { font-size: .65rem; }
+  .btn-nav      { font-size: .75rem; padding: .35rem .9rem; }
 }
