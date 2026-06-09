@@ -7,6 +7,41 @@
 'use strict';
 
 /* ------------------------------------------------------------------ */
+/*  MENSAJES DE HUMOR                                                   */
+/* ------------------------------------------------------------------ */
+const MSGS_CORRECT = [
+  '🥩 ¡Excelente chinchulín!',
+  '🧠 ¡Sos un capo, cabeza de chancho!',
+  '🔥 ¡Clavada! Sos un fenómeno.',
+  '🎯 ¡De taquito! Impecable.',
+  '🐷 ¡Chancho pero brillante!',
+  '⚡ ¡Exacto! Seguí así crack.',
+  '🏆 ¡Perfecto! Martín te da un 10.',
+  '💪 ¡Eso es! La rompiste.',
+  '🎉 ¡Correctísimo! Sos un genio de la lógica.',
+  '🌟 ¡De primera! Sin escalas.'
+];
+
+const MSGS_WRONG = [
+  '😅 ¡Dale que vos podés!',
+  '🪵 ¡Te voy a dar un tablaso! Volvé a intentar.',
+  '💪 Al piso, hacé dos flexiones y volvé.',
+  '🥤 Le vas a tener que pagar una Coca a Martín.',
+  '🦵 Reforzalas con dos sentadillas y seguí.',
+  '🤦 ¡Uy! Esa no era... pero podés.',
+  '😂 ¡Casi! Te faltó un cachito.',
+  '🏃 Salí a correr una vuelta y volvé con la respuesta.',
+  '🎸 ¡Error! Pero el que no yerra no aprende, crack.',
+  '🧐 Mmm... Revisá los apuntes y volvé con todo.',
+  '🍕 ¡Esa no! Te debo una pizza cuando apruebes.',
+  '😤 ¡No te rindas! Los campeones se levantan.'
+];
+
+function randomMsg(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/* ------------------------------------------------------------------ */
 /*  AUDIO (Web Audio API – sin archivos externos)                      */
 /* ------------------------------------------------------------------ */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -3445,7 +3480,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
   if (isCorrect) {
     btn.classList.add('correct');
     soundSuccess();
-    showPopup(true, '🐷 ¡Excelente cabeza de chancho!');
+    showPopup(true, randomMsg(MSGS_CORRECT));
     if (!state.awaitingJustification) updateStreak(true);
 
     if (!state.awaitingJustification && item.justification) {
@@ -3471,7 +3506,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
   } else {
     btn.classList.add('wrong');
     soundError();
-    showPopup(false, '🔔 ¡Te equivocaste chinchulín!');
+    showPopup(false, randomMsg(MSGS_WRONG));
     state.errorCount++;
     state.wrongAnswerCount++;
     if (!state.awaitingJustification) updateStreak(false);
@@ -3524,7 +3559,7 @@ function showJustification(item) {
       if (opt.correct) {
         btn.classList.add('correct');
         soundSuccess();
-        showPopup(true, '🐷 ¡Excelente cabeza de chancho!');
+        showPopup(true, randomMsg(MSGS_CORRECT));
         updateStreak(true);
         state.score += (state.errorCount === 0 ? 10 : 5);
         scoreEl.textContent = state.score;
@@ -3540,7 +3575,7 @@ function showJustification(item) {
       } else {
         btn.classList.add('wrong');
         soundError();
-        showPopup(false, '🔔 ¡Te equivocaste chinchulín!');
+        showPopup(false, randomMsg(MSGS_WRONG));
         updateStreak(false);
         setTimeout(() => {
           hidePopup();
