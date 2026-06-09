@@ -3733,6 +3733,49 @@ function showEndCard() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  BOTÓN COMPARTIR                                                     */
+/* ------------------------------------------------------------------ */
+(function initShare() {
+  const GAME_URL = 'https://nw7d1q9-7gcep2t-4j4f.vercel.app';
+  const btn = document.getElementById('btn-share');
+  const toast = document.getElementById('share-toast');
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    // 1. Intentar la Web Share API (móvil)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Aprende Jugando – Lógica Computacional',
+          text: '\uD83C\uDFAE Jugá y aprendé Lógica Computacional con este juego del IES9008 Manuel Belgrano. \uD83C\uDDE6\uD83C\uDDF7',
+          url: GAME_URL
+        });
+        return;
+      } catch (_) { /* usuario canceló o no soportado */ }
+    }
+
+    // 2. Copiar al portapapeles (escritorio)
+    try {
+      await navigator.clipboard.writeText(GAME_URL);
+    } catch (_) {
+      // Fallback antiguo
+      const ta = document.createElement('textarea');
+      ta.value = GAME_URL;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+
+    // 3. Mostrar toast por 2.5 s
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 2500);
+  });
+}());
+
+/* ------------------------------------------------------------------ */
 /*  CONTADOR DE VISITAS                                                 */
 /* ------------------------------------------------------------------ */
 (function trackVisit() {
