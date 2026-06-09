@@ -3596,17 +3596,36 @@ function handleAnswer(btn, isCorrect, item, grid) {
         }
       });
 
-      // Si erró 2 veces → marcar tema difícil y mostrar hint
+      // Si erró 2 veces → mostrar respuesta correcta, hint y botón continuar
       if (state.errorCount >= 2) {
         const sequence = state.phase === 'main' ? mainSequence : state.retryQueue;
         const currentItem = sequence[state.currentIndex];
         // Agregar a cola de repaso si no está ya
         const alreadyQueued = state.retryQueue.some(i => i === currentItem);
         if (!alreadyQueued && state.phase === 'main') {
-          // Crear variante de refuerzo si la tiene, o re-usar el mismo ítem
           state.retryQueue.push(currentItem);
         }
         showHint(item);
+
+        // Revelar la respuesta correcta y desbloquear el avance
+        allBtns.forEach(b => {
+          b.disabled = true;
+          if (b.dataset.correct === 'true') {
+            b.classList.add('correct');
+          }
+        });
+
+        // Mostrar botón CONTINUAR con mensaje claro
+        const btnContinue = $('btn-continue-q');
+        btnContinue.textContent = '✓ Ver respuesta y continuar →';
+        btnContinue.classList.remove('hidden');
+        btnContinue.onclick = () => {
+          btnContinue.textContent = 'Continuar →'; // restaurar texto original
+          soundClick();
+          navHistory.push(state.currentIndex);
+          state.currentIndex++;
+          showCurrentItem();
+        };
       }
     }, 2800);
   }
@@ -3655,13 +3674,44 @@ function showJustification(item) {
         soundError();
         showPopup(false, randomMsg(MSGS_WRONG));
         updateStreak(false);
+        state.errorCount++;
         setTimeout(() => {
           hidePopup();
-          allJ.forEach(b => {
-            if (!b.classList.contains('wrong') && !b.classList.contains('correct')) {
-              b.disabled = false;
-            }
-          });
+
+          if (state.errorCount >= 2) {
+            // Revelar respuesta correcta en la justificación y dejar avanzar
+            allJ.forEach(b => {
+              b.disabled = true;
+              if (b.dataset && b._isCorrect) b.classList.add('correct');
+            });
+            // Buscar y resaltar el botón correcto por texto
+            allJ.forEach(b => {
+              if (b.classList.contains('wrong')) return;
+              b.disabled = true;
+            });
+            item.justification.options.forEach((opt, idx) => {
+              if (opt.correct) {
+                const btns = justGrid.querySelectorAll('.option-btn');
+                if (btns[idx]) btns[idx].classList.add('correct');
+              }
+            });
+            const btnContinue = $('btn-continue-q');
+            btnContinue.textContent = '✓ Ver respuesta y continuar →';
+            btnContinue.classList.remove('hidden');
+            btnContinue.onclick = () => {
+              btnContinue.textContent = 'Continuar →';
+              soundClick();
+              navHistory.push(state.currentIndex);
+              state.currentIndex++;
+              showCurrentItem();
+            };
+          } else {
+            allJ.forEach(b => {
+              if (!b.classList.contains('wrong') && !b.classList.contains('correct')) {
+                b.disabled = false;
+              }
+            });
+          }
         }, 2800);
       }
     });
