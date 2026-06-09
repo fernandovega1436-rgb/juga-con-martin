@@ -23,18 +23,33 @@ const MSGS_CORRECT = [
 ];
 
 const MSGS_WRONG = [
-  '😅 ¡Dale que vos podés!',
-  '🪵 ¡Te voy a dar un tablaso! Volvé a intentar.',
-  '💪 Al piso, hacé dos flexiones y volvé.',
-  '🥤 Le vas a tener que pagar una Coca a Martín.',
-  '🦵 Reforzalas con dos sentadillas y seguí.',
-  '🤦 ¡Uy! Esa no era... pero podés.',
-  '😂 ¡Casi! Te faltó un cachito.',
+  // Humor físico
+  '😅 ¡Dale que vos podés! Volvé a intentarlo.',
+  '🪵 ¡Te voy a dar un tablaso! Revisá y volvé.',
+  '💪 Al piso, hacé dos flexiones y volvé con todo.',
+  '🦵 Dos sentadillas y la próxima la clavás.',
   '🏃 Salí a correr una vuelta y volvé con la respuesta.',
-  '🎸 ¡Error! Pero el que no yerra no aprende, crack.',
-  '🧐 Mmm... Revisá los apuntes y volvé con todo.',
+  '🤸 Diez saltos en el lugar y a intentar de nuevo.',
+  // Humor cordobés / argento
+  '🥤 Le vas a tener que pagar una Coca a Martín.',
   '🍕 ¡Esa no! Te debo una pizza cuando apruebes.',
-  '😤 ¡No te rindas! Los campeones se levantan.'
+  '🥙 Uy, esa se fue al descánso. ¡Seguí pichón!',
+  '🍺 Martín dice: "Esa respuesta no pasa ni en las prácticas".',
+  '😎 ¡Casáte con la respuesta correcta antes de avanzar!',
+  // Piropos / aliento (género neutro)
+  '💖 ¡Equivocarse es parte de aprender, crack! Dale de nuevo.',
+  '✨ Esa no era, pero tenés toda la onda para lograrlo.',
+  '🌟 ¡Casi! Una mente brillante como la tuya lo resuelve ya.',
+  '💙 Error de campeón/a. Los mejores también fallan antes de ganar.',
+  '🧡 ¡Ese cerebro tuyo sabe la respuesta! Pensá de nuevo.',
+  '🙌 No te rendís, que sos un/a genio/a en potencia.',
+  // Humor intelectual
+  '🧐 Mmm... Revisá los apuntes y volvé con todo.',
+  '📖 Los apuntes de Martín son la solución. ¡Dale una re-leída!',
+  '🎸 ¡Error! Pero el que no yerra no aprende.',
+  '😂 ¡Casi! Te faltó un cachito. ¡Volvé!',
+  '🤦 ¡Uy! Esa no era... pero podés. Te lo juro.',
+  '📊 Dato: el 90% de los genios fallaron en el primer intento.'
 ];
 
 function randomMsg(arr) {
@@ -49,6 +64,8 @@ let ctx = null;
 
 function getCtx() {
   if (!ctx) ctx = new AudioCtx();
+  // En móvil el contexto arranca suspendido; lo resumimos en cuanto podemos
+  if (ctx.state === 'suspended') ctx.resume();
   return ctx;
 }
 
@@ -3307,14 +3324,17 @@ function buildSequenceForLevel(levelId, startIdx) {
   updateBloomIndicator(levelId);
 }
 
-// Unlock AudioContext en el primer gesto del usuario
+// Unlock AudioContext en el primer gesto del usuario (click, touchstart, touchend)
 function unlockAudio() {
-  if (ctx && ctx.state === 'suspended') ctx.resume();
-  document.removeEventListener('click', unlockAudio);
-  document.removeEventListener('touchstart', unlockAudio);
+  if (!ctx) ctx = new AudioCtx();
+  if (ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+  // No removemos los listeners para que funcione en cada interacción
 }
-document.addEventListener('click', unlockAudio);
-document.addEventListener('touchstart', unlockAudio);
+document.addEventListener('click', unlockAudio, { passive: true });
+document.addEventListener('touchstart', unlockAudio, { passive: true });
+document.addEventListener('touchend', unlockAudio, { passive: true });
 
 $('btn-play').addEventListener('click', () => {
   renderLevelsGrid();
@@ -3580,7 +3600,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
         }
         showHint(item);
       }
-    }, 1500);
+    }, 2800);
   }
 }
 
@@ -3634,7 +3654,7 @@ function showJustification(item) {
               b.disabled = false;
             }
           });
-        }, 1500);
+        }, 2800);
       }
     });
     justGrid.appendChild(btn);
