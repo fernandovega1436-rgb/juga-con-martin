@@ -61,28 +61,37 @@ function randomMsg(arr) {
 /* ------------------------------------------------------------------ */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let ctx = null;
+let audioUnlocked = false;
 
 function getCtx() {
   if (!ctx) ctx = new AudioCtx();
-  // En móvil el contexto arranca suspendido; lo resumimos en cuanto podemos
-  if (ctx.state === 'suspended') ctx.resume();
   return ctx;
 }
 
+// Devuelve una promesa que se resuelve con el ctx listo para usar
+function getCtxReady() {
+  const c = getCtx();
+  if (c.state === 'suspended') {
+    return c.resume().then(() => c).catch(() => c);
+  }
+  return Promise.resolve(c);
+}
+
 function playTone(freq, type, duration, vol = 0.4) {
-  try {
-    const c = getCtx();
-    const osc = c.createOscillator();
-    const gain = c.createGain();
-    osc.connect(gain);
-    gain.connect(c.destination);
-    osc.type = type;
-    osc.frequency.value = freq;
-    gain.gain.setValueAtTime(vol, c.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
-    osc.start(c.currentTime);
-    osc.stop(c.currentTime + duration);
-  } catch (e) { /* silently ignore */ }
+  getCtxReady().then(c => {
+    try {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(vol, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+      osc.start(c.currentTime);
+      osc.stop(c.currentTime + duration);
+    } catch (e) { /* silently ignore */ }
+  }).catch(() => {});
 }
 
 function soundError() {
@@ -2950,19 +2959,8 @@ function playTrack2(c, masterGain, duration) {
 
 function startMusic() {
   if (musicPlaying) return;
-  // Resumir el AudioContext si está suspendido (política autoplay navegadores)
-  const c = getCtx();
-  if (c.state === 'suspended') {
-    c.resume().then(() => {
-      musicPlaying = true;
-      musicGainNode = c.createGain();
-      musicGainNode.gain.value = 0.35;
-      musicGainNode.connect(c.destination);
-      currentTrack = 0;
-      scheduleTrack();
-      syncMusicButtons();
-    });
-  } else {
+  getCtxReady().then(c => {
+    if (musicPlaying) return; // evitar doble inicio por race condition
     musicPlaying = true;
     musicGainNode = c.createGain();
     musicGainNode.gain.value = 0.35;
@@ -2970,7 +2968,7 @@ function startMusic() {
     currentTrack = 0;
     scheduleTrack();
     syncMusicButtons();
-  }
+  }).catch(() => {});
 }
 
 function scheduleTrack() {
@@ -3062,19 +3060,20 @@ function soundStreak() {
 }
 
 function soundClick() {
-  try {
-    const c = getCtx();
-    const osc = c.createOscillator();
-    const gain = c.createGain();
-    osc.connect(gain);
-    gain.connect(c.destination);
-    osc.type = 'sine';
-    osc.frequency.value = 800;
-    gain.gain.setValueAtTime(0.06, c.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.08);
-    osc.start(c.currentTime);
-    osc.stop(c.currentTime + 0.08);
-  } catch(e) {}
+  getCtxReady().then(c => {
+    try {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.type = 'sine';
+      osc.frequency.value = 800;
+      gain.gain.setValueAtTime(0.06, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.08);
+      osc.start(c.currentTime);
+      osc.stop(c.currentTime + 0.08);
+    } catch(e) {}
+  }).catch(() => {});
 }
 
 function showStreakBurst(n) {
@@ -3135,26 +3134,27 @@ function soundFernet() {
     setTimeout(() => playTone(f, 'sine', 0.3, 0.6), i * 100);
   });
   setTimeout(() => {
-    try {
-      const c      = getCtx();
-      const buf    = c.createBuffer(1, c.sampleRate * 0.8, c.sampleRate);
-      const data   = buf.getChannelData(0);
-      for (let i = 0; i < data.length; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.15));
-      }
-      const src    = c.createBufferSource();
-      const gain   = c.createGain();
-      const filter = c.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 1200;
-      filter.Q.value = 0.5;
-      src.buffer = buf;
-      src.connect(filter);
-      filter.connect(gain);
-      gain.connect(c.destination);
-      gain.gain.value = 0.3;
-      src.start();
-    } catch(e) {}
+    getCtxReady().then(c => {
+      try {
+        const buf    = c.createBuffer(1, c.sampleRate * 0.8, c.sampleRate);
+        const data   = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.15));
+        }
+        const src    = c.createBufferSource();
+        const gain   = c.createGain();
+        const filter = c.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 1200;
+        filter.Q.value = 0.5;
+        src.buffer = buf;
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(c.destination);
+        gain.gain.value = 0.3;
+        src.start();
+      } catch(e) {}
+    }).catch(() => {});
   }, 400);
 }
 
@@ -3324,13 +3324,14 @@ function buildSequenceForLevel(levelId, startIdx) {
   updateBloomIndicator(levelId);
 }
 
-// Unlock AudioContext en el primer gesto del usuario (click, touchstart, touchend)
+// Unlock AudioContext en el primer gesto del usuario
+// iOS/Android requieren resume() sincrónicamente dentro del handler
 function unlockAudio() {
   if (!ctx) ctx = new AudioCtx();
   if (ctx.state === 'suspended') {
     ctx.resume().catch(() => {});
   }
-  // No removemos los listeners para que funcione en cada interacción
+  audioUnlocked = true;
 }
 document.addEventListener('click', unlockAudio, { passive: true });
 document.addEventListener('touchstart', unlockAudio, { passive: true });
