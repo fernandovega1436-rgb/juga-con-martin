@@ -233,8 +233,8 @@ Si <span class='symbol'>p</span> es verdadera, se escribe <span class='symbol'>V
     options: [
       { text: 'Sí, y es verdadera', correct: false },
       { text: 'Sí, y es falsa', correct: false },
-      { text: 'No, porque su valor de verdad depende de los valores de x e y', correct: false },
-      { text: 'No en el sentido estricto: es una proposición abierta (depende de variables)', correct: true }
+      { text: 'No, porque contiene variables libres: formalmente es una fórmula abierta (aunque sea siempre verdadera)', correct: false },
+      { text: 'No en el sentido estricto: es una proposición abierta porque tiene variables libres x e y', correct: true }
     ]
   },
 
@@ -905,14 +905,16 @@ Y q es <strong>condición necesaria</strong> para p.</span>`
 <table>
   <tr><th>Nombre</th><th>Forma</th><th>Relación con directa</th></tr>
   <tr><td>Directa</td><td>p → q</td><td>—</td></tr>
-  <tr><td>Recíproca</td><td>q → p</td><td>Se obtiene invirtiendo antecedente y consecuente</td></tr>
-  <tr><td>Contrarrecíproca</td><td>-q → -p</td><td>Equivalente lógica a la directa</td></tr>
+  <tr><td>Recíproca</td><td>q → p</td><td>Se invierte. NO equivalente a la directa</td></tr>
+  <tr><td>Inversa</td><td>-p → -q</td><td>Se niegan ambas. NO equivalente a la directa</td></tr>
+  <tr><td>Contrarrecíproca</td><td>-q → -p</td><td>Se invierte y niega. <strong>Equivalente</strong> a la directa</td></tr>
 </table>
 <br>
-<strong>Importante:</strong> la implicación directa y su contrarrecíproca son <strong>equivalentes</strong>. La recíproca NO es equivalente a la directa en general.
+<strong>Importante:</strong> solo la contrarrecíproca es equivalente a la directa. La recíproca y la inversa NO lo son (aunque recíproca e inversa sí son equivalentes entre sí).
 <br><br>
 <span class='example'>Directa: "Si p entonces q" (p → q)<br>
 Recíproca: "Si q entonces p" (q → p)<br>
+Inversa: "Si no p entonces no q" (-p → -q)<br>
 Contrarrecíproca: "Si no q entonces no p" (-q → -p)</span>`
   },
 
@@ -1458,8 +1460,8 @@ Resultado: 0 (Falso)</span>`
     qtype: '🔍 Identificá el tipo',
     text: '"Algunos ingenieros son médicos." ¿Cómo clasificás esta oración?',
     options: [
-      { text: 'Proposición verdadera', correct: false },
-      { text: 'Proposición falsa', correct: true },
+      { text: 'Proposición verdadera', correct: true },
+      { text: 'Proposición falsa', correct: false },
       { text: 'No es proposición (es exclamación)', correct: false },
       { text: 'No es proposición (es orden)', correct: false }
     ]
@@ -2038,9 +2040,9 @@ Resultado: 0 (Falso)</span>`
     text: 'Siendo p=0 y q=1, ¿cuánto vale (p → q) ∧ (q → p)?',
     options: [
       { text: '1', correct: false },
-      { text: '0', correct: true },
+      { text: '0 — y además es lo mismo que p↔q', correct: true },
       { text: 'Indeterminado', correct: false },
-      { text: 'Es lo mismo que p↔q', correct: false }
+      { text: 'Es lo mismo que p∧q', correct: false }
     ],
     justification: {
       text: 'p→q = 0→1 = 1. q→p = 1→0 = 0. Entonces 1∧0 = ?',
@@ -2931,14 +2933,27 @@ function playTrack2(c, masterGain, duration) {
 
 function startMusic() {
   if (musicPlaying) return;
-  musicPlaying = true;
+  // Resumir el AudioContext si está suspendido (política autoplay navegadores)
   const c = getCtx();
-  musicGainNode = c.createGain();
-  musicGainNode.gain.value = 0.4;
-  musicGainNode.connect(c.destination);
-  currentTrack = 0;
-  scheduleTrack();
-  syncMusicButtons();
+  if (c.state === 'suspended') {
+    c.resume().then(() => {
+      musicPlaying = true;
+      musicGainNode = c.createGain();
+      musicGainNode.gain.value = 0.35;
+      musicGainNode.connect(c.destination);
+      currentTrack = 0;
+      scheduleTrack();
+      syncMusicButtons();
+    });
+  } else {
+    musicPlaying = true;
+    musicGainNode = c.createGain();
+    musicGainNode.gain.value = 0.35;
+    musicGainNode.connect(c.destination);
+    currentTrack = 0;
+    scheduleTrack();
+    syncMusicButtons();
+  }
 }
 
 function scheduleTrack() {
@@ -3027,6 +3042,22 @@ function updateStreak(correct) {
 
 function soundStreak() {
   [880, 1100, 1320].forEach((f,i) => setTimeout(() => playTone(f,'sine',0.15,0.3), i*80));
+}
+
+function soundClick() {
+  try {
+    const c = getCtx();
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.connect(gain);
+    gain.connect(c.destination);
+    osc.type = 'sine';
+    osc.frequency.value = 800;
+    gain.gain.setValueAtTime(0.06, c.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.08);
+    osc.start(c.currentTime);
+    osc.stop(c.currentTime + 0.08);
+  } catch(e) {}
 }
 
 function showStreakBurst(n) {
@@ -3276,6 +3307,15 @@ function buildSequenceForLevel(levelId, startIdx) {
   updateBloomIndicator(levelId);
 }
 
+// Unlock AudioContext en el primer gesto del usuario
+function unlockAudio() {
+  if (ctx && ctx.state === 'suspended') ctx.resume();
+  document.removeEventListener('click', unlockAudio);
+  document.removeEventListener('touchstart', unlockAudio);
+}
+document.addEventListener('click', unlockAudio);
+document.addEventListener('touchstart', unlockAudio);
+
 $('btn-play').addEventListener('click', () => {
   renderLevelsGrid();
   switchScreen(screenStart, screenLevels);
@@ -3412,6 +3452,7 @@ function showDefinition(item) {
   cardDef.classList.remove('hidden');
 
   $('btn-continue-def').onclick = () => {
+    soundClick();
     navHistory.push(state.currentIndex);
     state.currentIndex++;
     showCurrentItem();
@@ -3434,6 +3475,7 @@ function showReview(item) {
   cardReview.classList.remove('hidden');
 
   $('btn-continue-review').onclick = () => {
+    soundClick();
     navHistory.push(state.currentIndex);
     state.currentIndex++;
     showCurrentItem();
@@ -3469,7 +3511,10 @@ function showQuestion(item) {
     btn.textContent = opt.text;
     btn.dataset.correct = opt.correct;
     btn.dataset.idx = idx;
-    btn.addEventListener('click', () => handleAnswer(btn, opt.correct, item, grid));
+    btn.addEventListener('click', () => {
+      soundClick();
+      handleAnswer(btn, opt.correct, item, grid);
+    });
     grid.appendChild(btn);
   });
 }
@@ -3499,6 +3544,7 @@ function handleAnswer(btn, isCorrect, item, grid) {
         hidePopup();
         $('btn-continue-q').classList.remove('hidden');
         $('btn-continue-q').onclick = () => {
+          soundClick();
           navHistory.push(state.currentIndex);
           state.currentIndex++;
           showCurrentItem();
@@ -3555,6 +3601,7 @@ function showJustification(item) {
     btn.className = 'option-btn';
     btn.textContent = opt.text;
     btn.addEventListener('click', () => {
+      soundClick();
       const allJ = justGrid.querySelectorAll('.option-btn');
       allJ.forEach(b => b.disabled = true);
 
@@ -3569,6 +3616,7 @@ function showJustification(item) {
           hidePopup();
           $('btn-continue-q').classList.remove('hidden');
           $('btn-continue-q').onclick = () => {
+            soundClick();
             navHistory.push(state.currentIndex);
             state.currentIndex++;
             showCurrentItem();
@@ -3655,6 +3703,37 @@ function showEndCard() {
 
   showFernetPopup(() => {});
 }
+
+/* ------------------------------------------------------------------ */
+/*  CONTADOR DE VISITAS                                                 */
+/* ------------------------------------------------------------------ */
+(function trackVisit() {
+  // Usar countapi.xyz — namespace único para este proyecto
+  const NAMESPACE = 'aprende-jugando-ies9008';
+  const KEY = 'visitas';
+
+  fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`)
+    .then(r => r.json())
+    .then(data => {
+      // Guardar en localStorage para referencia local
+      localStorage.setItem('aprendejugando_total_visitas', data.value);
+      console.log('Visita registrada. Total:', data.value);
+
+      // Enviar notificación a Fernando cada 10 visitas via ntfy.sh (servicio push gratuito)
+      if (data.value % 10 === 0) {
+        fetch('https://ntfy.sh/aprende-jugando-ies9008-fernando', {
+          method: 'POST',
+          headers: {
+            'Title': '🎓 Aprende Jugando – Visitas',
+            'Priority': 'default',
+            'Tags': 'school,argentina'
+          },
+          body: `¡Ya llegaste a ${data.value} visitas en el juego! 🇦🇷`
+        }).catch(() => {});
+      }
+    })
+    .catch(() => {});
+})();
 
 /* ------------------------------------------------------------------ */
 /*  INICIO AUTOMÁTICO                                                   */
