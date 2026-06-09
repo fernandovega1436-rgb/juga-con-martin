@@ -68,6 +68,16 @@ function getCtx() {
   return ctx;
 }
 
+// Desbloquea el AudioContext sincrónicamente dentro de un gesto de usuario.
+// Debe llamarse DIRECTAMENTE en un handler de click/touch — no en setTimeout ni promesa.
+function unlockAudioSync() {
+  if (!ctx) ctx = new AudioCtx();
+  if (ctx.state === 'suspended') {
+    ctx.resume(); // llamada sincrónica — iOS la acepta dentro del gesto
+  }
+  audioUnlocked = true;
+}
+
 // Devuelve una promesa que se resuelve con el ctx listo para usar
 function getCtxReady() {
   const c = getCtx();
@@ -3228,6 +3238,7 @@ function renderLevelsGrid() {
     `;
 
     btn.addEventListener('click', () => {
+      unlockAudioSync(); // desbloquear audio en el gesto del nivel
       const prog = loadProgress(lvl.id);
       if (prog.index > 0 && !prog.done) {
         // Nivel en progreso: preguntar continuar o empezar
@@ -3324,23 +3335,19 @@ function buildSequenceForLevel(levelId, startIdx) {
   updateBloomIndicator(levelId);
 }
 
-// Unlock AudioContext en el primer gesto del usuario
-// iOS/Android requieren resume() sincrónicamente dentro del handler
-function unlockAudio() {
-  if (!ctx) ctx = new AudioCtx();
-  if (ctx.state === 'suspended') {
-    ctx.resume().catch(() => {});
-  }
-  audioUnlocked = true;
-}
-document.addEventListener('click', unlockAudio, { passive: true });
-document.addEventListener('touchstart', unlockAudio, { passive: true });
-document.addEventListener('touchend', unlockAudio, { passive: true });
-
+// El primer gesto real del usuario es tocar "Jugar" — ahí desbloqueamos el audio
 $('btn-play').addEventListener('click', () => {
+  unlockAudioSync(); // sincrónico dentro del gesto → iOS lo acepta
   renderLevelsGrid();
   switchScreen(screenStart, screenLevels);
 });
+
+// También escuchamos cualquier otro toque como respaldo
+function unlockAudio() {
+  if (!audioUnlocked) unlockAudioSync();
+}
+document.addEventListener('touchstart', unlockAudio, { passive: true });
+document.addEventListener('click', unlockAudio, { passive: true });
 
 $('btn-levels-back').addEventListener('click', () => {
   switchScreen(screenLevels, screenStart);
